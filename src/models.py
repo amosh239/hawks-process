@@ -1,31 +1,6 @@
 import numpy as np
 from scipy.optimize import minimize
 
-class GlobalSeasonalProfile:
-    def __init__(self, period=24):
-        self.period = period
-        self.profile = None 
-
-    def fit(self, all_times_list):
-        if len(all_times_list) > 0 and isinstance(all_times_list[0], list):
-             all_times = [t for seq in all_times_list for t in seq]
-        else:
-             all_times = all_times_list
-             
-        hours = [t.hour for t in all_times]
-        counts = np.bincount(hours, minlength=self.period)
-        
-        if counts.sum() > 0:
-            self.profile = counts / counts.sum()
-        else:
-            self.profile = np.ones(self.period) / self.period
-            
-        self.profile = (counts + 1) / (counts.sum() + self.period)
-        return self
-
-    def get_rate(self, t, user_average_rate):
-        return user_average_rate * self.profile[t.hour] * self.period
-
 class SeasonalPoisson:
     def __init__(self, period=24):
         self.period = period
@@ -47,7 +22,46 @@ class SeasonalPoisson:
         integral = np.mean(self.rates) * T_max_hours
         return -(log_sum - integral)
 
+# --- Global Models ---
+class GlobalSeasonalProfile:
+    def __init__(self, period=24):
+        self.period = period
+        self.profile = None 
 
+    def fit(self, all_times_list):
+        # Flatten list if needed
+        if len(all_times_list) > 0 and isinstance(all_times_list[0], list):
+             all_times = [t for seq in all_times_list for t in seq]
+        else:
+             all_times = all_times_list
+             
+        hours = [t.hour for t in all_times]
+        counts = np.bincount(hours, minlength=self.period)
+        self.profile = (counts + 1) / (counts.sum() + self.period)
+        return self
+    
+    def get_val(self, hour):
+        return self.profile[hour]
+
+class GlobalSeasonalPoisson:
+    def __init__(self, global_profile, user_train_times):
+        self.glob = global_profile
+        duration = (user_train_times[-1] - user_train_times[0]).total_seconds() / 3600
+        if duration < 1: duration = 1
+        self.user_rate = len(user_train_times) / duration
+        
+    def get_intensity(self, t, history=None):
+        return self.user_rate * self.glob.get_val(t.hour) * 24
+    
+    def nll(self, times, T_max_hours):
+        log_sum = 0
+        for t in times:
+            lam = self.get_intensity(t)
+            log_sum += np.log(lam)
+        integral = self.user_rate * T_max_hours
+        return -(log_sum - integral)
+
+# --- Hawkes (Updated) ---
 class HawkesExp:
     def __init__(self, baseline_model=None):
         self.baseline = baseline_model
@@ -83,8 +97,14 @@ class HawkesExp:
             
         integral_hawkes = (alpha / beta) * np.sum(1 - np.exp(-beta * (T_max - t_arr)))
         
+        # FIX: Универсальный доступ к интегралу базовой модели
         if self.baseline:
-            integral_base = np.mean(self.baseline.rates) * T_max 
+            if hasattr(self.baseline, 'user_rate'):
+                # Для GlobalSeasonalPoisson
+                integral_base = self.baseline.user_rate * T_max
+            else:
+                # Для SeasonalPoisson (Local)
+                integral_base = np.mean(self.baseline.rates) * T_max
         else:
             integral_base = mu_const * T_max
             
@@ -92,12 +112,13 @@ class HawkesExp:
 
     def fit(self, times):
         T_max = (times[-1] - times[0]).total_seconds() / 3600
+        
         if self.baseline:
-            init = [0.5, 1.0]
-            bounds = ((1e-5, None), (1e-5, None))
+            init = [0.1, 0.1]
+            bounds = ((1e-5, 5.0), (0.01, 1.0)) 
         else:
-            init = [0.1, 0.5, 1.0]
-            bounds = ((1e-5, None), (1e-5, None), (1e-5, None))
+            init = [0.1, 0.1, 0.5]
+            bounds = ((1e-5, None), (1e-5, 5.0), (0.01, 1.0))
             
         res = minimize(lambda p: self._nll_calc(p, times, T_max), 
                        init, method='L-BFGS-B', bounds=bounds)
