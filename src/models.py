@@ -29,7 +29,6 @@ class GlobalSeasonalProfile:
         self.profile = None 
 
     def fit(self, all_times_list):
-        # Flatten list if needed
         if len(all_times_list) > 0 and isinstance(all_times_list[0], list):
              all_times = [t for seq in all_times_list for t in seq]
         else:

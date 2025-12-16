@@ -67,8 +67,7 @@ def run_validation_loop(sequences, model_factory, label="Exp", min_events=30, tr
             })
             
         except Exception as e:
-            # Раскомментируй, если опять будет пусто, чтобы видеть ошибку!
-            # print(f"Error {uid}: {e}") 
+            print(f"Error {uid}: {e}") 
             continue
             
     return pd.DataFrame(results)

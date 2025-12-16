@@ -39,6 +39,7 @@ def evaluate_forecast(model, train, test, window_hours=1.0):
     return rmse, y_window, probs
 
 
+# Херня метрика
 def evaluate_next_day_probability(model, train_times, test_times, horizon_hours=24):
     """
     Проверяем, насколько хорошо модель предсказывает вероятность покупки

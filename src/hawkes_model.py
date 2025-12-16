@@ -8,13 +8,11 @@ class HawkesExp:
         self.params = None 
 
     def _nll_calc(self, params, times, T_max):
-        # Распаковка (3 параметра)
         if self.baseline:
             mu_scale, alpha, beta = params
         else:
             mu_const, alpha, beta = params
 
-        # Защита границ
         if alpha < 0 or beta <= 0: return 1e10
         if self.baseline and mu_scale < 0: return 1e10
         if not self.baseline and mu_const <= 0: return 1e10
@@ -25,9 +23,7 @@ class HawkesExp:
         R = 0
         log_term = 0
         
-        # 1. Log Term
         if self.baseline:
-            # Scale baseline intensity
             base_int = self.baseline.get_intensity(times[0]) * mu_scale
             log_term += np.log(base_int if base_int > 1e-9 else 1e-9)
         else:
@@ -45,7 +41,6 @@ class HawkesExp:
             if lam <= 1e-9: return 1e10
             log_term += np.log(lam)
             
-        # 2. Integrals
         integral_hawkes = (alpha / beta) * np.sum(1 - np.exp(-beta * (T_max - t_arr)))
         
         if self.baseline:
@@ -58,7 +53,6 @@ class HawkesExp:
             
         nll = -(log_term - integral_base - integral_hawkes)
 
-        # L1/L2 Regularization on Alpha
         reg_term = self.penalty_weight * (alpha ** 2)
         
         return nll + reg_term
@@ -70,11 +64,8 @@ class HawkesExp:
         avg_rate = len(times) / T_max
         alpha_max = max(10.0, avg_rate * 100.0)
         
-        # Параметры: [mu_scale, alpha, beta]
         if self.baseline:
-            # Стартуем с mu_scale=1.0 (как обычный пуассон) и alpha=0
             init = [1.0, 1e-5, 1.0]
-            # mu_scale от 0.01 до 5.0
             bounds = ((0.01, 5.0), (1e-6, alpha_max), (0.01, 10.0))
         else:
             init = [avg_rate, 1e-5, 1.0]
@@ -86,7 +77,6 @@ class HawkesExp:
         return self
     
     def nll(self, times, T_max_hours):
-        # Считаем чистый NLL без штрафа для метрик
         saved = self.penalty_weight
         self.penalty_weight = 0
         val = self._nll_calc(self.params, times, T_max_hours)
@@ -94,10 +84,9 @@ class HawkesExp:
         return val
 
     def get_intensity(self, t, history):
-        # ВАЖНО: Тут тоже распаковываем 3 параметра
         if self.baseline:
             mu_scale, alpha, beta = self.params
-            mu = self.baseline.get_intensity(t) * mu_scale # <--- Scale!
+            mu = self.baseline.get_intensity(t) * mu_scale 
         else:
             mu, alpha, beta = self.params
         
