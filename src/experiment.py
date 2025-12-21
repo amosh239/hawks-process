@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from tqdm import tqdm
 from .models import GlobalSeasonalProfile, GlobalSeasonalPoisson
 from .utils import temporal_train_test_split
@@ -6,68 +7,68 @@ from .metrics import calc_test_ll, evaluate_forecast, evaluate_next_day_probabil
 
 def run_validation_loop(sequences, model_factory, label="Exp", min_events=30, train_ratio=0.8):
     active_users = sequences[sequences.apply(len) >= min_events].index
-    print(f"Running '{label}': N={len(active_users)} users")
+    print(f"Running '{label}': N={len(active_users)}")
     
-    print("Fitting Global Profile...")
-    all_train_times = []
-    for uid in active_users:
-        tr, _ = temporal_train_test_split(sequences[uid], train_ratio)
-        all_train_times.append(tr)
-    global_prof = GlobalSeasonalProfile().fit(all_train_times)
+    train_times_all = [temporal_train_test_split(sequences[u], train_ratio)[0] for u in active_users]
+    global_prof = GlobalSeasonalProfile().fit(train_times_all)
     
     results = []
+    
     for uid in tqdm(active_users):
         times = sequences[uid]
         train, test = temporal_train_test_split(times, train_ratio)
         if len(test) < 1: continue
-            
-        try:
-            poisson = GlobalSeasonalPoisson(global_prof, train)
-            
-            challenger = model_factory(poisson)
-            challenger.fit(train)
-            
-            alpha_val, beta_val, mu_scale = (0.0, 1.0, 1.0) 
-            
-            if hasattr(challenger, 'params'):
-                params = challenger.params
-                if len(params) == 3:
-                    mu_scale, alpha_val, beta_val = params
-                elif len(params) == 2:
-                    mu_scale = 1.0
-                    alpha_val, beta_val = params
-            
-            br_ratio = alpha_val / beta_val if beta_val > 1e-9 else 0.0
+        
+        baseline = GlobalSeasonalPoisson(global_prof, train)
+        model = model_factory(baseline)
+        model.fit(train)
+        
+        kernel_type = getattr(model, 'kernel', 'exp')
+        p = model.params
+        
+        mu_scale, alpha, beta, delta = 1.0, 0.0, 1.0, 1.0
+        
+        if kernel_type == 'power':
+            mu_scale, alpha, beta, delta = p
+        elif kernel_type == 'exp':
+            mu_scale, alpha, beta = p
+        
+        br_ratio = alpha / beta if beta > 1e-9 else 0.0
 
-            ll_p = calc_test_ll(poisson, train, test)
-            ll_h = calc_test_ll(challenger, train, test)
+        ll_base = calc_test_ll(baseline, train, test)
+        ll_model = calc_test_ll(model, train, test)
+        
+        rmse_base, _, _ = evaluate_forecast(baseline, train, test)
+        rmse_model, _, _ = evaluate_forecast(model, train, test)
+        
+        loss_base, _, _ = evaluate_next_day_probability(baseline, train, test)
+        loss_model, _, _ = evaluate_next_day_probability(model, train, test)
+
+        results.append({
+            'user_id': uid,
+            'experiment': label,
+            'kernel': kernel_type,
+            'penalty': getattr(model, 'penalty_weight', 0),
+            'events': len(times),
             
-            rmse_p, _, _ = evaluate_forecast(poisson, train, test)
-            rmse_h, _, _ = evaluate_forecast(challenger, train, test)
-
-            loss_p, _, _ = evaluate_next_day_probability(poisson, train, test)
-            loss_h, _, _ = evaluate_next_day_probability(challenger, train, test)
+            'mu_scale': mu_scale,
+            'alpha': alpha,
+            'beta': beta,
+            'delta': delta,
+            'branching_ratio': br_ratio,
             
-            results.append({
-                'user_id': uid,
-                'experiment': label,
-                'events_total': len(times),
-
-                'mu_scale': mu_scale, 'alpha': alpha_val, 'beta': beta_val, 'branching_ratio': br_ratio,
-
-                'll_baseline': ll_p,
-                'll_challenger': ll_h,
-                'rmse_baseline': rmse_p,
-                'rmse_challenger': rmse_h,
-
-                'imp_ll': ll_h - ll_p,
-                'imp_rmse': (1 - rmse_h/rmse_p) * 100,
-                'imp_logloss': (loss_p - loss_h) * 100,
-                'hawkes_win_ll': ll_h > ll_p 
-            })
+            'll_base': ll_base,
+            'll_model': ll_model,
+            'imp_ll': ll_model - ll_base,
+            'win_ll': ll_model > ll_base,
             
-        except Exception as e:
-            print(f"Error {uid}: {e}") 
-            continue
+            'rmse_base': rmse_base,
+            'rmse_model': rmse_model,
+            'imp_rmse': (1 - rmse_model/rmse_base) * 100,
+            
+            'logloss_base': loss_base,
+            'logloss_model': loss_model,
+            'imp_logloss': (loss_base - loss_model) * 100
+        })
             
     return pd.DataFrame(results)

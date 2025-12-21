@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.optimize import minimize
 
-class HawkesExp:
+class HawkesModel:
     def __init__(self, baseline_model=None, penalty_weight=0.0, kernel='exp'):
         self.baseline = baseline_model
         self.penalty_weight = penalty_weight
