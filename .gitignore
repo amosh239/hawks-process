@@ -1,4 +1,24 @@
 /aux/
 /data/
-AGENTS.md
+/results/
+.venv/
+/notebooks/logs/
 .DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Editors
+.vscode/
+.idea/
