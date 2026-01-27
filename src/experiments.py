@@ -30,7 +30,7 @@ def calc_test_ll(
 
     ll_full = -model.nll(full_times, full_types, t_end=full_end or full_times[-1], window_start=window_start)
     ll_train = -model.nll(train_times, train_types_use, t_end=train_end or train_times[-1], window_start=window_start)
-    denom = len(test_times) if denom is None else int(denom)
+    denom = float(len(test_times)) if denom is None else float(denom)
     if denom <= 0:
         return None
     return (ll_full - ll_train) / denom
