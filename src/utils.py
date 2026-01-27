@@ -28,16 +28,22 @@ def integrate_intensity(baseline, t_start, t_end, step_minutes=5):
     if t_start >= t_end:
         return 0.0
 
-    # Exact path if baseline exposes hourly rates
+    # Exact path if baseline exposes hourly rates:
+    # - 24 bins: hour-of-day
+    # - 168 bins: hour-of-week
     rates = getattr(baseline, "rates", None)
-    if rates is not None and len(rates) == 24:
+    if rates is not None and len(rates) in (24, 168):
         total = 0.0
         current = t_start
         while current < t_end:
             hour_end = (current.floor("h") + pd.Timedelta(hours=1))
             seg_end = min(hour_end, t_end)
             hours = (seg_end - current).total_seconds() / 3600.0
-            total += float(rates[current.hour]) * hours
+            if len(rates) == 24:
+                idx = int(current.hour)
+            else:
+                idx = int(current.dayofweek) * 24 + int(current.hour)
+            total += float(rates[idx]) * hours
             current = seg_end
         return total
 

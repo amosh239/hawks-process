@@ -36,14 +36,20 @@ def main():
         raise FileNotFoundError(f"Missing file: {args.path}")
     max_seqs = args.max_seqs
     if args.smoke:
-        max_seqs = 50
-        args.min_events = 3
-        args.min_train_events = 5
+        # Pick enough sequences so we reliably get some purchases, but keep it fast.
+        max_seqs = 10
+        args.min_events = 20
+        args.min_train_events = 15
         args.min_purchases_train = 1
         args.train_ratio = 0.7
 
     if args.dataset == "retailrocket":
-        sequences = load_retailrocket(args.path, max_sequences=max_seqs)
+        sequences = load_retailrocket(
+            args.path,
+            max_sequences=max_seqs,
+            min_events=args.min_events,
+            require_transaction=True,
+        )
     else:
         raise ValueError("Unsupported dataset")
 

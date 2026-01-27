@@ -24,6 +24,29 @@ class HourlySeasonalPoisson:
         return float(self.rates[t.hour])
 
 
+class HourOfWeekSeasonalPoisson:
+    """Piecewise-constant Poisson by hour-of-week (168 bins)."""
+
+    def __init__(self):
+        self.rates = np.ones(168, dtype=float)
+
+    def fit(self, times):
+        if len(times) == 0:
+            return self
+        idx = [int(t.dayofweek) * 24 + int(t.hour) for t in times]
+        counts = np.bincount(idx, minlength=168)
+        # Avoid explosive rates when span is short (or only a few events).
+        span_days = max(1.0, (times[-1] - times[0]).total_seconds() / 86400.0)
+        span_weeks = max(1.0, span_days / 7.0)
+        self.rates = counts / span_weeks
+        self.rates[self.rates < 1e-8] = 1e-8
+        return self
+
+    def get_intensity(self, t, history=None):
+        idx = int(t.dayofweek) * 24 + int(t.hour)
+        return float(self.rates[idx])
+
+
 class ScaledBaseline:
     """lambda(t) = mu * lambda0(t); mu via exact MLE."""
 

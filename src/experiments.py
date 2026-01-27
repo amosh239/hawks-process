@@ -1,6 +1,6 @@
 import pandas as pd
 from pathlib import Path
-from .baselines import HourlySeasonalPoisson, ScaledBaseline
+from .baselines import HourlySeasonalPoisson, HourOfWeekSeasonalPoisson, ScaledBaseline
 from .hawkes import HawkesExp, PurchaseTargetHawkes
 from .utils import temporal_train_test_split, ensure_dir
 
@@ -106,6 +106,27 @@ def run_purchase_experiment(
     if max_sequences is not None:
         selected = selected[:max_sequences]
 
+    # Global seasonal profile: fit once on pooled train purchases across all users.
+    # Per-user activity is handled by ScaledBaseline via MLE mu.
+    pooled_purchases_train = []
+    for seq in selected:
+        times = sorted(seq["times"])
+        types = [t for _, t in sorted(zip(seq["times"], seq["types"]))]
+
+        train_times, test_times, train_types, test_types = temporal_train_test_split(times, types, train_ratio=train_ratio)
+        if len(test_times) == 0:
+            continue
+        if len(train_times) < min_train_events:
+            continue
+
+        purchases_train = [t for t, tp in zip(train_times, train_types) if tp == target_type]
+        if len(purchases_train) < min_purchases_train:
+            continue
+        pooled_purchases_train.extend(purchases_train)
+
+    pooled_purchases_train = sorted(pooled_purchases_train)
+    base = HourOfWeekSeasonalPoisson().fit(pooled_purchases_train)
+
     for seq in selected:
         times = sorted(seq["times"])
         types = [t for _, t in sorted(zip(seq["times"], seq["types"]))]
@@ -125,7 +146,6 @@ def run_purchase_experiment(
         train_end = train_times[-1]
         full_end = test_times[-1]
 
-        base = HourlySeasonalPoisson().fit(purchases_train)
         scaled = ScaledBaseline(base).fit(purchases_train, window_start=window_start, window_end=train_end)
         hawkes = PurchaseTargetHawkes(baseline=base, n_types=n_types, target_type=target_type).fit(train_times, train_types)
 
