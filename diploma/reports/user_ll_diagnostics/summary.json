@@ -1,0 +1,184 @@
+{
+  "data_path": "data/processed/orbitals/dayuses_cohort_10000_seed42_daily_grid.csv",
+  "target_col": "to_ord",
+  "train_ratio": 0.8,
+  "resolved_analysis_window": {
+    "start": "2025-01-15",
+    "end": "2025-09-30"
+  },
+  "split_date": "2025-08-09",
+  "poisson_to_rolling": {
+    "users": 9926,
+    "share_new_better": 0.32560951037678826,
+    "mean_delta_ll": 0.16652752936837892,
+    "median_delta_ll": -0.5892924629240603,
+    "q10_delta_ll": -1.3406780829235778,
+    "q90_delta_ll": 2.3259983779744324
+  },
+  "poisson_to_rolling_by_test_purchases": [
+    {
+      "bucket": "0",
+      "users": 1686,
+      "share_users": 0.1698569413661092,
+      "share_new_better": 0.0,
+      "mean_delta_ll": -1.3222726147613202,
+      "median_delta_ll": -1.3406780829235778
+    },
+    {
+      "bucket": "1",
+      "users": 1391,
+      "share_users": 0.14013701390288133,
+      "share_new_better": 0.002875629043853343,
+      "mean_delta_ll": -1.105769301760768,
+      "median_delta_ll": -1.12142446972942
+    },
+    {
+      "bucket": "2",
+      "users": 1138,
+      "share_users": 0.11464839814628248,
+      "share_new_better": 0.0035149384885764497,
+      "mean_delta_ll": -0.8838666874200081,
+      "median_delta_ll": -0.8891976727995523
+    },
+    {
+      "bucket": "3-5",
+      "users": 2239,
+      "share_users": 0.22556921217005843,
+      "share_new_better": 0.015185350602947744,
+      "mean_delta_ll": -0.4648001693717122,
+      "median_delta_ll": -0.48776916562305317
+    },
+    {
+      "bucket": "6-10",
+      "users": 1663,
+      "share_users": 0.1675397944791457,
+      "share_new_better": 0.830426939266386,
+      "mean_delta_ll": 0.3593883930404229,
+      "median_delta_ll": 0.31279577128063707
+    },
+    {
+      "bucket": "11+",
+      "users": 1809,
+      "share_users": 0.18224863993552287,
+      "share_new_better": 1.0,
+      "mean_delta_ll": 3.797287979894059,
+      "median_delta_ll": 2.5339921202694384
+    }
+  ],
+  "rolling_to_rolling_seasonal": {
+    "users": 9926,
+    "share_new_better": 0.46423534152730206,
+    "mean_delta_ll": 0.0023616543672042704,
+    "median_delta_ll": -0.010889062744099398,
+    "q10_delta_ll": -0.12456147545236895,
+    "q90_delta_ll": 0.13758393231803723
+  },
+  "rolling_to_rolling_seasonal_by_test_purchases": [
+    {
+      "bucket": "0",
+      "users": 1686,
+      "share_users": 0.1698569413661092,
+      "share_new_better": 0.0017793594306049821,
+      "mean_delta_ll": -0.01077598107644131,
+      "median_delta_ll": -0.010889062744099398
+    },
+    {
+      "bucket": "1",
+      "users": 1391,
+      "share_users": 0.14013701390288133,
+      "share_new_better": 0.595255212077642,
+      "mean_delta_ll": -0.007716168162537295,
+      "median_delta_ll": 0.004155692874627803
+    },
+    {
+      "bucket": "2",
+      "users": 1138,
+      "share_users": 0.11464839814628248,
+      "share_new_better": 0.5553602811950791,
+      "mean_delta_ll": -0.0060635728013832685,
+      "median_delta_ll": 0.01179945633749746
+    },
+    {
+      "bucket": "3-5",
+      "users": 2239,
+      "share_users": 0.22556921217005843,
+      "share_new_better": 0.5265743635551585,
+      "mean_delta_ll": -0.001185735938972069,
+      "median_delta_ll": 0.0097696595924468
+    },
+    {
+      "bucket": "6-10",
+      "users": 1663,
+      "share_users": 0.1675397944791457,
+      "share_new_better": 0.5544197233914612,
+      "mean_delta_ll": 0.0044676451702549075,
+      "median_delta_ll": 0.01755792667114875
+    },
+    {
+      "bucket": "11+",
+      "users": 1809,
+      "share_users": 0.18224863993552287,
+      "share_new_better": 0.5771144278606966,
+      "mean_delta_ll": 0.030109889416825717,
+      "median_delta_ll": 0.05468584404076182
+    }
+  ],
+  "rolling_seasonal_to_personalized": {
+    "users": 9926,
+    "share_new_better": 0.6642151924239371,
+    "mean_delta_ll": 2.479810107793943,
+    "median_delta_ll": 1.1085768500837307,
+    "q10_delta_ll": -3.246253958387932,
+    "q90_delta_ll": 5.511397929926089
+  },
+  "rolling_seasonal_to_personalized_by_test_purchases": [
+    {
+      "bucket": "0",
+      "users": 1686,
+      "share_users": 0.1698569413661092,
+      "share_new_better": 0.9412811387900356,
+      "mean_delta_ll": 3.913428034925145,
+      "median_delta_ll": 4.60025035532568
+    },
+    {
+      "bucket": "1",
+      "users": 1391,
+      "share_users": 0.14013701390288133,
+      "share_new_better": 0.9180445722501798,
+      "mean_delta_ll": 2.5309291388825907,
+      "median_delta_ll": 3.2684007228361986
+    },
+    {
+      "bucket": "2",
+      "users": 1138,
+      "share_users": 0.11464839814628248,
+      "share_new_better": 0.8708260105448155,
+      "mean_delta_ll": 1.2396805307845966,
+      "median_delta_ll": 1.8466833607224267
+    },
+    {
+      "bucket": "3-5",
+      "users": 2239,
+      "share_users": 0.22556921217005843,
+      "share_new_better": 0.5087092451987495,
+      "mean_delta_ll": -0.7431716141331626,
+      "median_delta_ll": 0.011128497994516096
+    },
+    {
+      "bucket": "6-10",
+      "users": 1663,
+      "share_users": 0.1675397944791457,
+      "share_new_better": 0.179795550210463,
+      "mean_delta_ll": -2.1211346732447707,
+      "median_delta_ll": -0.7588475638153902
+    },
+    {
+      "bucket": "11+",
+      "users": 1809,
+      "share_users": 0.18224863993552287,
+      "share_new_better": 0.718629076838032,
+      "mean_delta_ll": 10.103197784693494,
+      "median_delta_ll": 2.5321221363853823
+    }
+  ]
+}

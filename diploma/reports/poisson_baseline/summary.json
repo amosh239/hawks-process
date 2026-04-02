@@ -1,0 +1,110 @@
+{
+  "data_path": "data/processed/orbitals/dayuses_cohort_10000_seed42_daily_grid.csv",
+  "target_col": "to_ord",
+  "train_ratio": 0.8,
+  "requested_analysis_window": {
+    "start": "2025-01-15",
+    "end": "2025-09-30"
+  },
+  "resolved_analysis_window": {
+    "start": "2025-01-15",
+    "end": "2025-09-30"
+  },
+  "split_date": "2025-08-09",
+  "model": "global_poisson",
+  "params": {
+    "mu": 0.10264338263601516
+  },
+  "full_panel": {
+    "rows": 2869319,
+    "users": 10000,
+    "date_min": "2025-01-01",
+    "date_max": "2025-10-31",
+    "mean_target": 0.1112507880789832,
+    "share_nonzero_days": 0.06514193786051672
+  },
+  "analysis_panel": {
+    "rows": 2500231,
+    "users": 10000,
+    "date_min": "2025-01-15",
+    "date_max": "2025-09-30",
+    "mean_target": 0.10815760623718368,
+    "share_nonzero_days": 0.06321175923344682
+  },
+  "train_panel": {
+    "rows": 1987113,
+    "users": 9966,
+    "date_min": "2025-01-15",
+    "date_max": "2025-08-09",
+    "mean_target": 0.10264338263601516,
+    "share_nonzero_days": 0.06028846874838019
+  },
+  "test_panel": {
+    "rows": 513118,
+    "users": 9926,
+    "date_min": "2025-08-10",
+    "date_max": "2025-09-30",
+    "mean_target": 0.12951212001917686,
+    "share_nonzero_days": 0.07453256365982094
+  },
+  "excluded_periods": {
+    "pre_window_mean_target": 0.11923617389788782,
+    "analysis_window_mean_target": 0.10815760623718368,
+    "post_window_mean_target": 0.13649756389589127,
+    "pre_window_daily_mean_target": 0.12976661759416155,
+    "post_window_daily_mean_target": 0.14160256197072574,
+    "analysis_window_daily_mean_target": 0.10787302466108274,
+    "pre_to_analysis_ratio": 1.1024298525654261,
+    "post_to_analysis_ratio": 1.262024638346374,
+    "pre_to_analysis_daily_ratio": 1.2029570692197096,
+    "post_to_analysis_daily_ratio": 1.312678145584728
+  },
+  "activity_lifetime_days": {
+    "mean": 241.0403,
+    "median": 253.0,
+    "max": 258.0
+  },
+  "first_purchase_intensity": {
+    "mean_daily_new_users": 24.583011583011583,
+    "max_daily_new_users": 166.0,
+    "peak_date": "2025-01-16"
+  },
+  "first_seen_intensity": {
+    "mean_daily_new_users": 6.714285714285714,
+    "max_daily_new_users": 99.0,
+    "peak_date": "2025-01-15"
+  },
+  "user_purchase_overlap": {
+    "users_total": 10000,
+    "both_count": 7960,
+    "both_share_all": 0.796,
+    "only_train_count": 1706,
+    "only_train_share_all": 0.1706,
+    "only_test_count": 280,
+    "only_test_share_all": 0.028,
+    "neither_count": 54,
+    "neither_share_all": 0.0054
+  },
+  "train_metrics": {
+    "poisson_loglik": -765151.6270294213,
+    "mean_poisson_nll": 0.38505692782917794,
+    "mean_poisson_deviance": 0.6315185477246084,
+    "mae": 0.19291034053947145,
+    "rmse": 0.5812938132247095,
+    "aggregate_bias": -1.3877787807814457e-17,
+    "relative_aggregate_bias": -1.352039211044577e-16,
+    "mean_target": 0.10264338263601516,
+    "mean_prediction": 0.10264338263601515
+  },
+  "test_metrics": {
+    "poisson_loglik": -236458.00167515577,
+    "mean_poisson_nll": 0.460825778232601,
+    "mean_poisson_deviance": 0.7493096239092031,
+    "mae": 0.21685495375403577,
+    "rmse": 0.6549557500991092,
+    "aggregate_bias": -0.026868737383161728,
+    "relative_aggregate_bias": -0.20746118107852202,
+    "mean_target": 0.12951212001917686,
+    "mean_prediction": 0.10264338263601513
+  }
+}

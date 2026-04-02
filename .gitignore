@@ -22,3 +22,8 @@ htmlcov/
 # Editors
 .vscode/
 .idea/
+
+.cache/
+.mplconfig/
+article/
+AGENT.md

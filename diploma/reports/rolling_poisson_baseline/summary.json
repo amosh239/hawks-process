@@ -1,0 +1,116 @@
+{
+  "data_path": "data/processed/orbitals/dayuses_cohort_10000_seed42_daily_grid.csv",
+  "target_col": "to_ord",
+  "train_ratio": 0.8,
+  "requested_analysis_window": {
+    "start": "2025-01-15",
+    "end": "2025-09-30"
+  },
+  "resolved_analysis_window": {
+    "start": "2025-01-15",
+    "end": "2025-09-30"
+  },
+  "split_date": "2025-08-09",
+  "model": "global_rolling_mean_poisson",
+  "params": {
+    "window_size": 7,
+    "min_periods": 1
+  },
+  "train_panel": {
+    "rows": 1987113,
+    "users": 9966,
+    "date_min": "2025-01-15",
+    "date_max": "2025-08-09",
+    "mean_target": 0.10264338263601516,
+    "share_nonzero_days": 0.06028846874838019
+  },
+  "test_panel": {
+    "rows": 513118,
+    "users": 9926,
+    "date_min": "2025-08-10",
+    "date_max": "2025-09-30",
+    "mean_target": 0.12951212001917686,
+    "share_nonzero_days": 0.07453256365982094
+  },
+  "train_metrics_global_poisson": {
+    "poisson_loglik": -765151.6270294213,
+    "mean_poisson_nll": 0.38505692782917794,
+    "mean_poisson_deviance": 0.6315185477246084,
+    "mae": 0.19291034053947145,
+    "rmse": 0.5812938132247095,
+    "aggregate_bias": -1.3877787807814457e-17,
+    "relative_aggregate_bias": -1.352039211044577e-16,
+    "mean_target": 0.10264338263601516,
+    "mean_prediction": 0.10264338263601515
+  },
+  "test_metrics_global_poisson": {
+    "poisson_loglik": -236458.00167515577,
+    "mean_poisson_nll": 0.460825778232601,
+    "mean_poisson_deviance": 0.7493096239092031,
+    "mae": 0.21685495375403577,
+    "rmse": 0.6549557500991092,
+    "aggregate_bias": -0.026868737383161728,
+    "relative_aggregate_bias": -0.20746118107852202,
+    "mean_target": 0.12951212001917686,
+    "mean_prediction": 0.10264338263601513
+  },
+  "train_metrics_rolling_poisson": {
+    "poisson_loglik": -764675.0910823843,
+    "mean_poisson_nll": 0.38481711461924123,
+    "mean_poisson_deviance": 0.6310389213047349,
+    "mae": 0.19256408436024985,
+    "rmse": 0.5812515673564096,
+    "aggregate_bias": -0.00031812114153208226,
+    "relative_aggregate_bias": -0.0030992854421037076,
+    "mean_target": 0.10264338263601516,
+    "mean_prediction": 0.10232526149448308
+  },
+  "test_metrics_rolling_poisson": {
+    "poisson_loglik": -234805.0494186452,
+    "mean_poisson_nll": 0.45760439005968456,
+    "mean_poisson_deviance": 0.7428668475633702,
+    "mae": 0.23877977558743885,
+    "rmse": 0.6544087561692975,
+    "aggregate_bias": -0.0010892880979720687,
+    "relative_aggregate_bias": -0.00841070393883428,
+    "mean_target": 0.12951212001917686,
+    "mean_prediction": 0.1284228319212048
+  },
+  "test_improvement_vs_global_poisson": {
+    "delta_poisson_loglik": 1652.952256510558,
+    "delta_mean_poisson_nll": -0.0032213881729164506,
+    "delta_mean_poisson_deviance": -0.006442776345832901,
+    "delta_mae": 0.02192482183340308,
+    "delta_rmse": -0.0005469939298117232
+  },
+  "rolling_window_sweep": {
+    "window_sizes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "test_poisson_loglik": [
+      -234879.99628407066,
+      -234867.45811133448,
+      -234846.8932526835,
+      -234841.63569330628,
+      -234827.95645708247,
+      -234817.79761194403,
+      -234805.0494186452,
+      -234802.17556218075,
+      -234818.44549789932,
+      -234832.93097710956
+    ],
+    "best_window_size_by_test_poisson_loglik": 8,
+    "best_test_poisson_loglik": -234802.17556218075,
+    "selected_window_size": 7,
+    "selected_test_poisson_loglik": -234805.0494186452
+  }
+}
