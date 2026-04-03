@@ -1,0 +1,58 @@
+{
+  "users": 9926,
+  "share_new_better": 0.4019746121297602,
+  "mean_delta_ll": -0.10936214155854106,
+  "median_delta_ll": -0.03011473752055327,
+  "q10_delta_ll": -0.30362348486504587,
+  "q90_delta_ll": 0.13977223499417768,
+  "by_test_purchases": [
+    {
+      "bucket": "0",
+      "users": 1686,
+      "share_users": 0.1698569413661092,
+      "share_new_better": 0.029062870699881376,
+      "mean_delta_ll": -0.09569766594019635,
+      "median_delta_ll": -0.07168010347422649
+    },
+    {
+      "bucket": "1",
+      "users": 1391,
+      "share_users": 0.14013701390288133,
+      "share_new_better": 0.47304097771387493,
+      "mean_delta_ll": -0.03300318191636886,
+      "median_delta_ll": -0.0047861805410081
+    },
+    {
+      "bucket": "2",
+      "users": 1138,
+      "share_users": 0.11464839814628248,
+      "share_new_better": 0.5430579964850615,
+      "mean_delta_ll": -0.007864088847125804,
+      "median_delta_ll": 0.011474834081652396
+    },
+    {
+      "bucket": "3-5",
+      "users": 2239,
+      "share_users": 0.22556921217005843,
+      "share_new_better": 0.503796337650737,
+      "mean_delta_ll": -0.022605948005472914,
+      "median_delta_ll": 0.0007553551210897069
+    },
+    {
+      "bucket": "6-10",
+      "users": 1663,
+      "share_users": 0.1675397944791457,
+      "share_new_better": 0.48045700541190617,
+      "mean_delta_ll": -0.07192654351605557,
+      "median_delta_ll": -0.008164236972699968
+    },
+    {
+      "bucket": "11+",
+      "users": 1809,
+      "share_users": 0.18224863993552287,
+      "share_new_better": 0.4079601990049751,
+      "mean_delta_ll": -0.3864549661303233,
+      "median_delta_ll": -0.06714610847458857
+    }
+  ]
+}

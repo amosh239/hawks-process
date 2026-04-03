@@ -23,7 +23,7 @@ from src.diploma_experimental import run_experimental_1_hawkes
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run the main short-memory Hawkes experiment with half-lives 1 and 3 days"
+        description="Run preliminary additive Hawkes without learned baseline scale on the current diploma split"
     )
     parser.add_argument(
         "--data-path",
@@ -36,18 +36,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--analysis-end", default="2025-09-30", help="Requested analysis window end date")
     parser.add_argument("--window-size", type=int, default=7, help="Rolling window for chapter-4 baseline")
     parser.add_argument("--alpha-l2", type=float, default=1e-4, help="L2 regularization for pooled Hawkes alpha")
-    parser.add_argument(
-        "--scale-l2",
-        type=float,
-        default=10.0,
-        help="Quadratic regularization that keeps the learned baseline scale near 1",
-    )
-    parser.add_argument("--scale-init", type=float, default=1.0, help="Initial value for learned baseline scale")
     parser.add_argument("--max-iter", type=int, default=300, help="Optimizer max iterations")
     parser.add_argument(
         "--output-dir",
-        default="diploma/reports/experimental_1_hawkes",
-        help="Directory for main Hawkes artifacts",
+        default="diploma/reports/experimental_1_additive_hawkes",
+        help="Directory for additive Hawkes artifacts",
     )
     return parser.parse_args()
 
@@ -64,12 +57,12 @@ def main() -> None:
         window_size=args.window_size,
         half_lives=(1.0, 3.0),
         alpha_l2=args.alpha_l2,
-        learn_base_scale=True,
-        scale_l2=args.scale_l2,
-        scale_init=args.scale_init,
+        learn_base_scale=False,
+        scale_l2=0.0,
+        scale_init=1.0,
         max_iter=args.max_iter,
-        model_label="Scaled-baseline Hawkes",
-        model_slug="experimental_1_hawkes",
+        model_label="Additive Hawkes",
+        model_slug="experimental_1_additive_hawkes",
     )
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 

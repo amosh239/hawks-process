@@ -18,12 +18,12 @@ os.environ.setdefault("MPLCONFIGDIR", str(mpl_config))
 os.environ.setdefault("XDG_CACHE_HOME", str(xdg_cache))
 os.environ.setdefault("MPLBACKEND", "Agg")
 
-from src.diploma_experimental import run_experimental_1_hawkes
+from src.diploma_experimental.pipeline import run_experimental_1_hawkes
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run the main short-memory Hawkes experiment with half-lives 1 and 3 days"
+        description="Run short-memory Hawkes with only half-life=1 on current diploma split"
     )
     parser.add_argument(
         "--data-path",
@@ -46,8 +46,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-iter", type=int, default=300, help="Optimizer max iterations")
     parser.add_argument(
         "--output-dir",
-        default="diploma/reports/experimental_1_hawkes",
-        help="Directory for main Hawkes artifacts",
+        default="diploma/reports/experimental_1_2_hawkes_hl1",
+        help="Directory for short-memory Hawkes artifacts",
     )
     return parser.parse_args()
 
@@ -62,14 +62,14 @@ def main() -> None:
         analysis_start=args.analysis_start,
         analysis_end=args.analysis_end,
         window_size=args.window_size,
-        half_lives=(1.0, 3.0),
+        half_lives=(1.0,),
         alpha_l2=args.alpha_l2,
         learn_base_scale=True,
         scale_l2=args.scale_l2,
         scale_init=args.scale_init,
         max_iter=args.max_iter,
-        model_label="Scaled-baseline Hawkes",
-        model_slug="experimental_1_hawkes",
+        model_label="Short-memory Hawkes (hl=1)",
+        model_slug="experimental_1_2_hawkes_hl1",
     )
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 

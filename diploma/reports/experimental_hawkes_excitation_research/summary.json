@@ -1,0 +1,26 @@
+{
+  "data_path": "data/processed/orbitals/dayuses_cohort_10000_seed42_daily_grid.csv",
+  "target_col": "to_ord",
+  "feature_names": [
+    "searches",
+    "cat_to_cart",
+    "cat_to_ord",
+    "to_cart",
+    "to_ord"
+  ],
+  "half_lives": [
+    1.0,
+    3.0
+  ],
+  "analysis_window": {
+    "start": "2025-01-15",
+    "end": "2025-09-30"
+  },
+  "split_date": "2025-08-09",
+  "reference_model": {
+    "base_scale": 0.8261703812940764,
+    "test_delta_poisson_loglik_vs_personalized": 7073.9534997405135
+  },
+  "fraction_summary_csv": "diploma/reports/experimental_hawkes_excitation_research/fraction_excitation_summary.csv",
+  "weekly_summary_csv": "diploma/reports/experimental_hawkes_excitation_research/weekly_excitation_summary.csv"
+}

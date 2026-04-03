@@ -1,0 +1,62 @@
+{
+  "data_path": "data/processed/orbitals/dayuses_cohort_10000_seed42_daily_grid.csv",
+  "analysis_window": {
+    "start": "2025-01-15",
+    "end": "2025-09-30"
+  },
+  "rows": 2500231,
+  "feature_names": [
+    "searches",
+    "search_to_cart",
+    "search_to_ord",
+    "cat_to_cart",
+    "cat_to_ord",
+    "to_cart",
+    "to_ord"
+  ],
+  "target_col": "to_ord",
+  "top_correlations": [
+    {
+      "left": "search_to_ord",
+      "right": "to_ord",
+      "pearson_corr": 0.9798768806470343
+    },
+    {
+      "left": "search_to_cart",
+      "right": "to_cart",
+      "pearson_corr": 0.975736274305506
+    },
+    {
+      "left": "search_to_cart",
+      "right": "search_to_ord",
+      "pearson_corr": 0.57542265504929
+    },
+    {
+      "left": "to_cart",
+      "right": "to_ord",
+      "pearson_corr": 0.5725064685804166
+    },
+    {
+      "left": "search_to_cart",
+      "right": "to_ord",
+      "pearson_corr": 0.5660788718620643
+    },
+    {
+      "left": "search_to_ord",
+      "right": "to_cart",
+      "pearson_corr": 0.5598886121383333
+    },
+    {
+      "left": "searches",
+      "right": "search_to_cart",
+      "pearson_corr": 0.5594895460835144
+    },
+    {
+      "left": "searches",
+      "right": "to_cart",
+      "pearson_corr": 0.5528063866835781
+    }
+  ],
+  "feature_summary_csv": "diploma/reports/feature_research/feature_summary.csv",
+  "feature_correlation_csv": "diploma/reports/feature_research/feature_correlation.csv"
+}

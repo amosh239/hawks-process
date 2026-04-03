@@ -18,12 +18,20 @@ os.environ.setdefault("MPLCONFIGDIR", str(mpl_config))
 os.environ.setdefault("XDG_CACHE_HOME", str(xdg_cache))
 os.environ.setdefault("MPLBACKEND", "Agg")
 
-from src.diploma_experimental import run_experimental_1_hawkes
+from src.diploma_experimental.excitation_research import run_experimental_hawkes_excitation_research
+
+
+def parse_half_lives(text: str) -> tuple[float, ...]:
+    return tuple(float(x.strip()) for x in str(text).split(",") if x.strip())
+
+
+def parse_train_fractions(text: str) -> tuple[float, ...]:
+    return tuple(float(x.strip()) for x in str(text).split(",") if x.strip())
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run the main short-memory Hawkes experiment with half-lives 1 and 3 days"
+        description="Research excitation stability of scaled-baseline Hawkes fits"
     )
     parser.add_argument(
         "--data-path",
@@ -35,26 +43,24 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--analysis-start", default="2025-01-15", help="Requested analysis window start date")
     parser.add_argument("--analysis-end", default="2025-09-30", help="Requested analysis window end date")
     parser.add_argument("--window-size", type=int, default=7, help="Rolling window for chapter-4 baseline")
+    parser.add_argument("--half-lives", default="1,3", help="Comma-separated Hawkes half-lives in days")
     parser.add_argument("--alpha-l2", type=float, default=1e-4, help="L2 regularization for pooled Hawkes alpha")
-    parser.add_argument(
-        "--scale-l2",
-        type=float,
-        default=10.0,
-        help="Quadratic regularization that keeps the learned baseline scale near 1",
-    )
-    parser.add_argument("--scale-init", type=float, default=1.0, help="Initial value for learned baseline scale")
-    parser.add_argument("--max-iter", type=int, default=300, help="Optimizer max iterations")
+    parser.add_argument("--scale-l2", type=float, default=10.0, help="Regularization for learned baseline scale")
+    parser.add_argument("--reference-max-iter", type=int, default=300, help="Max iterations for full-train reference fit")
+    parser.add_argument("--subset-max-iter", type=int, default=150, help="Max iterations for prefix and weekly fits")
+    parser.add_argument("--train-fractions", default="0.1,0.3,0.5,0.7,1.0", help="Comma-separated train fractions")
+    parser.add_argument("--weekly-window-days", type=int, default=7, help="Weekly window size in train days")
     parser.add_argument(
         "--output-dir",
-        default="diploma/reports/experimental_1_hawkes",
-        help="Directory for main Hawkes artifacts",
+        default="diploma/reports/experimental_hawkes_excitation_research",
+        help="Directory for excitation-research artifacts",
     )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    summary = run_experimental_1_hawkes(
+    summary = run_experimental_hawkes_excitation_research(
         data_path=Path(args.data_path),
         output_dir=Path(args.output_dir),
         target_col=args.target_col,
@@ -62,14 +68,13 @@ def main() -> None:
         analysis_start=args.analysis_start,
         analysis_end=args.analysis_end,
         window_size=args.window_size,
-        half_lives=(1.0, 3.0),
+        half_lives=parse_half_lives(args.half_lives),
         alpha_l2=args.alpha_l2,
-        learn_base_scale=True,
         scale_l2=args.scale_l2,
-        scale_init=args.scale_init,
-        max_iter=args.max_iter,
-        model_label="Scaled-baseline Hawkes",
-        model_slug="experimental_1_hawkes",
+        reference_max_iter=args.reference_max_iter,
+        subset_max_iter=args.subset_max_iter,
+        train_fractions=parse_train_fractions(args.train_fractions),
+        weekly_window_days=args.weekly_window_days,
     )
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
