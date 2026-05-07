@@ -1,0 +1,57 @@
+{
+  "test_panel": {
+    "rows": 513118
+  },
+  "test_metrics_pooled_hawkes": {
+    "poisson_loglik": -206534.59895714422,
+    "mean_poisson_nll": 0.4025089725114773,
+    "mean_poisson_deviance": 0.6326760124669557,
+    "mae": 0.218660560051391,
+    "rmse": 0.6318058149446086,
+    "aggregate_bias": -0.004272296744798315,
+    "relative_aggregate_bias": -0.032987621113496686,
+    "mean_target": 0.12951212001917686,
+    "mean_prediction": 0.12523982327437855
+  },
+  "fit_params": {
+    "alpha_l2": 0.0001,
+    "scale_l2": 10.0,
+    "c": 0.300321004076078,
+    "alpha_norm": 0.07864906558941667,
+    "alpha": [
+      0.0,
+      0.0042763523572439035,
+      0.0,
+      0.002162120881411887,
+      0.0,
+      0.0,
+      0.0,
+      0.004503029482307683,
+      0.0,
+      0.07837369639988082
+    ],
+    "feature_names": [
+      "searches",
+      "cat_to_cart",
+      "cat_to_ord",
+      "to_cart",
+      "to_ord"
+    ],
+    "half_lives": [
+      1.0,
+      3.0
+    ],
+    "n_params": 11,
+    "converged": true,
+    "train_loss": 574782.690966539
+  },
+  "train_panel": {
+    "start": "2025-01-15",
+    "end": "2025-08-09",
+    "rows": 1987113
+  },
+  "test_panel_dates": {
+    "start": "2025-08-10",
+    "end": "2025-09-30"
+  }
+}

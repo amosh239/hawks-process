@@ -1,0 +1,13 @@
+{
+  "n_blocks": 13,
+  "mean_nll_degenerate": 0.3185327168436744,
+  "mean_nll_frozen_ch6": 0.3074791491681194,
+  "mean_nll_test_fit_default": 0.3018526977322601,
+  "mean_nll_test_fit_warm": 0.30185186729115,
+  "mean_alpha_norm_test_fit_default": 0.031356222825995844,
+  "mean_alpha_norm_test_fit_warm": 0.031063506199616488,
+  "mean_c_test_fit_default": 0.5494232658558029,
+  "mean_c_test_fit_warm": 0.5494724536728463,
+  "ch6_alpha_norm": 0.015874507866387545,
+  "ch6_scale": 0.8262
+}

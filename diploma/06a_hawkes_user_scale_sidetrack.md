@@ -117,8 +117,8 @@ $$
 
 Код:
 
-1. модель: `src/diploma_experimental/hawkes.py`;
-2. pipeline: `src/diploma_experimental/pipeline.py`;
+1. модель: `src/diploma_baselines/models/hawkes.py`;
+2. pipeline: `src/diploma_baselines/pipeline.py`;
 3. раннер: `scripts/run_experimental_1_1_hawkes.py`.
 
 Артефакты:

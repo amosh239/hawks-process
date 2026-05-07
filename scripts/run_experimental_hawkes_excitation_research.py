@@ -18,7 +18,7 @@ os.environ.setdefault("MPLCONFIGDIR", str(mpl_config))
 os.environ.setdefault("XDG_CACHE_HOME", str(xdg_cache))
 os.environ.setdefault("MPLBACKEND", "Agg")
 
-from src.diploma_experimental.excitation_research import run_experimental_hawkes_excitation_research
+from src.diploma_baselines.excitation_research import run_hawkes_excitation_research
 
 
 def parse_half_lives(text: str) -> tuple[float, ...]:
@@ -60,7 +60,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    summary = run_experimental_hawkes_excitation_research(
+    summary = run_hawkes_excitation_research(
         data_path=Path(args.data_path),
         output_dir=Path(args.output_dir),
         target_col=args.target_col,

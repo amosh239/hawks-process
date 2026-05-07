@@ -10,18 +10,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from src.diploma_baselines.data import filter_date_range, load_daily_grid, split_panel_by_date
-from src.diploma_baselines.metrics import evaluate_count_forecast
-from src.diploma_baselines.models.personalized_gamma_poisson import PersonalizedGammaPoissonScaler
-from src.diploma_baselines.models.rolling_seasonal_poisson import GlobalRollingSeasonalPoissonModel
-
-from .hawkes import (
+from .data import filter_date_range, load_daily_grid, split_panel_by_date
+from .experiment_utils import _resolve_analysis_window
+from .metrics import evaluate_count_forecast
+from .models.hawkes import (
     FEATURE_NAMES,
     PooledAdditiveMultiKernelHawkesResult,
     build_basis_states,
     fit_pooled_additive_multi_kernel_hawkes,
     predict_pooled_additive_multi_kernel_hawkes,
 )
+from .models.personalized_gamma_poisson import PersonalizedGammaPoissonScaler
+from .models.rolling_seasonal_poisson import GlobalRollingSeasonalPoissonModel
 
 
 @dataclass
@@ -33,20 +33,6 @@ class HawkesUserRecord:
     states: np.ndarray
     train_mask: np.ndarray
     test_mask: np.ndarray
-
-
-def _resolve_analysis_window(
-    df: pd.DataFrame,
-    analysis_start: str | None,
-    analysis_end: str | None,
-) -> tuple[pd.Timestamp, pd.Timestamp]:
-    available_start = pd.Timestamp(df["event_date"].min())
-    available_end = pd.Timestamp(df["event_date"].max())
-    start = max(pd.Timestamp(analysis_start), available_start) if analysis_start else available_start
-    end = min(pd.Timestamp(analysis_end), available_end) if analysis_end else available_end
-    if start > end:
-        raise ValueError("Resolved analysis window is empty")
-    return start, end
 
 
 def _relative_l2_distance(a: np.ndarray, b: np.ndarray) -> float:
@@ -391,7 +377,7 @@ def _plot_feature_mass_heatmap_dual_scale(
     plt.close(fig)
 
 
-def run_experimental_hawkes_excitation_research(
+def run_hawkes_excitation_research(
     data_path: str | Path,
     output_dir: str | Path,
     target_col: str = "to_ord",

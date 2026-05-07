@@ -154,7 +154,7 @@ Split тот же:
 
 1. признаки и модель: `src/diploma_experimental/gbdt.py`;
 2. pipeline: `src/diploma_experimental/pipeline.py`;
-3. plots: `src/diploma_experimental/plots.py`;
+3. plots: `src/diploma_baselines/plots.py`;
 4. раннер: `scripts/run_experimental_2_gbdt.py`.
 
 Артефакты:

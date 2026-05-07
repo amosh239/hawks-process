@@ -69,7 +69,7 @@ Reference-fit дает:
 
 Код и артефакты:
 
-1. модуль: `src/diploma_experimental/excitation_research.py`;
+1. модуль: `src/diploma_baselines/excitation_research.py`;
 2. раннер: `scripts/run_experimental_hawkes_excitation_research.py`;
 3. summary:
    - `diploma/reports/experimental_hawkes_excitation_research/fraction_excitation_summary.csv`

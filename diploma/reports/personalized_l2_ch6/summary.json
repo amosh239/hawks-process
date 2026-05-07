@@ -1,0 +1,22 @@
+{
+  "test_panel": {
+    "rows": 513118
+  },
+  "test_metrics_personalized_l2": {
+    "poisson_loglik": -215165.79228012604,
+    "mean_poisson_nll": 0.41933004158911996,
+    "mean_poisson_deviance": 0.666318150622241,
+    "mae": 0.2116874775726752,
+    "rmse": 0.6332668439438541,
+    "aggregate_bias": -0.015062547536302193,
+    "relative_aggregate_bias": -0.11630222356079015,
+    "mean_target": 0.12951212001917686,
+    "mean_prediction": 0.11444957248287467
+  },
+  "fit_params": {
+    "lambda_l2": 1.0,
+    "n_users": 9966,
+    "lambda_mean": 0.890084902665742,
+    "lambda_median": 0.5437089842193963
+  }
+}

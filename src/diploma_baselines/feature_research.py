@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from .experiment_utils import _resolve_analysis_window
+
 FEATURE_RESEARCH_NAMES = [
     "searches",
     "search_to_cart",
@@ -21,20 +23,6 @@ FEATURE_RESEARCH_NAMES = [
 
 
 TARGET_COL = "to_ord"
-
-
-def _resolve_analysis_window(
-    df: pd.DataFrame,
-    analysis_start: str | None,
-    analysis_end: str | None,
-) -> tuple[pd.Timestamp, pd.Timestamp]:
-    available_start = pd.Timestamp(df["event_date"].min())
-    available_end = pd.Timestamp(df["event_date"].max())
-    start = max(pd.Timestamp(analysis_start), available_start) if analysis_start else available_start
-    end = min(pd.Timestamp(analysis_end), available_end) if analysis_end else available_end
-    if start > end:
-        raise ValueError("Resolved analysis window is empty")
-    return start, end
 
 
 def _plot_feature_distribution_grid(
@@ -149,7 +137,7 @@ def _plot_pair_scatter_grid(
     plt.close(fig)
 
 
-def run_experimental_hawkes_feature_research(
+def run_hawkes_feature_research(
     data_path: str | Path,
     output_dir: str | Path,
     analysis_start: str | None = "2025-01-15",

@@ -18,7 +18,7 @@ os.environ.setdefault("MPLCONFIGDIR", str(mpl_config))
 os.environ.setdefault("XDG_CACHE_HOME", str(xdg_cache))
 os.environ.setdefault("MPLBACKEND", "Agg")
 
-from src.diploma_experimental.feature_research import run_experimental_hawkes_feature_research
+from src.diploma_baselines.feature_research import run_hawkes_feature_research
 
 
 def parse_args() -> argparse.Namespace:
@@ -40,7 +40,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    summary = run_experimental_hawkes_feature_research(
+    summary = run_hawkes_feature_research(
         data_path=Path(args.data_path),
         output_dir=Path(args.output_dir),
         analysis_start=args.analysis_start,

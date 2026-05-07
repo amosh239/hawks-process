@@ -1,0 +1,13 @@
+{
+  "n_blocks": 13,
+  "mean_H_c": 0.5494232658558029,
+  "mean_H_alpha_norm": 0.031356222825995844,
+  "mean_F_c": 1.000000205979808,
+  "mean_F_alpha_norm": 0.0,
+  "mean_nll_H": 0.3018526977322601,
+  "mean_nll_F": 0.1998854054902591,
+  "mean_nll_pers_oos_only": 0.3185327168436744,
+  "mean_nll_pers_is_only": 0.19988540549026176,
+  "F_degenerate_count": 13,
+  "H_degenerate_count": 0
+}
