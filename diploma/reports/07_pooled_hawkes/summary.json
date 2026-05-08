@@ -1,0 +1,97 @@
+{
+  "test_panel": {
+    "rows": 513118
+  },
+  "test_metrics_pooled_hawkes": {
+    "poisson_loglik": -206534.59895714422,
+    "mean_poisson_nll": 0.4025089725114773,
+    "mean_poisson_deviance": 0.6326760124669557,
+    "mae": 0.218660560051391,
+    "rmse": 0.6318058149446086,
+    "aggregate_bias": -0.004272296744798315,
+    "relative_aggregate_bias": -0.032987621113496686,
+    "mean_target": 0.12951212001917686,
+    "mean_prediction": 0.12523982327437855
+  },
+  "train_metrics_pooled_hawkes": {
+    "poisson_loglik": -671642.4773015901,
+    "mean_poisson_nll": 0.33799913608415333,
+    "mean_poisson_deviance": 0.537402964234559,
+    "mae": 0.17984825602871599,
+    "rmse": 0.562387721299025,
+    "aggregate_bias": 1.996308796325952e-06
+  },
+  "fit_params": {
+    "alpha_l2": 0.0001,
+    "scale_l2": 10.0,
+    "c": 0.300321004076078,
+    "alpha_norm": 0.07864906558941667,
+    "alpha": [
+      0.0,
+      0.0042763523572439035,
+      0.0,
+      0.002162120881411887,
+      0.0,
+      0.0,
+      0.0,
+      0.004503029482307683,
+      0.0,
+      0.07837369639988082
+    ],
+    "feature_names": [
+      "searches",
+      "cat_to_cart",
+      "cat_to_ord",
+      "to_cart",
+      "to_ord"
+    ],
+    "half_lives": [
+      1.0,
+      3.0
+    ],
+    "n_params": 11
+  },
+  "user_level_vs_personalized_gp": {
+    "share_pos_overall": 0.4154745113842434,
+    "mean_delta_ll": 0.36594938044423125,
+    "median_delta_ll": -0.37964707765177885,
+    "by_bucket": [
+      {
+        "bucket": "0",
+        "n": 1686,
+        "mean_delta": -0.03318443101460396,
+        "share_pos": 0.3582443653618031
+      },
+      {
+        "bucket": "1",
+        "n": 1391,
+        "mean_delta": -0.10224536354450205,
+        "share_pos": 0.28109273903666426
+      },
+      {
+        "bucket": "2",
+        "n": 1138,
+        "mean_delta": 0.07044601339666554,
+        "share_pos": 0.37961335676625657
+      },
+      {
+        "bucket": "3-5",
+        "n": 2239,
+        "mean_delta": 0.5881376382278352,
+        "share_pos": 0.5149620366234926
+      },
+      {
+        "bucket": "6-10",
+        "n": 1663,
+        "mean_delta": 0.7794835246330203,
+        "share_pos": 0.481659651232712
+      },
+      {
+        "bucket": "11+",
+        "n": 1809,
+        "mean_delta": 0.6286882061736999,
+        "share_pos": 0.4107241569928137
+      }
+    ]
+  }
+}

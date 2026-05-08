@@ -1,0 +1,40 @@
+{
+  "n_grid": [
+    15,
+    21,
+    27,
+    36,
+    48,
+    63,
+    84,
+    114,
+    153,
+    198
+  ],
+  "m_grid": [
+    50,
+    35,
+    30,
+    25,
+    20,
+    18,
+    14,
+    10,
+    8,
+    6
+  ],
+  "model_labels": [
+    "Global Poisson",
+    "Rolling Poisson",
+    "Rolling Seasonal",
+    "Personalized Gamma-Poisson",
+    "Scaled-baseline Hawkes",
+    "Joint Hawkes (λ_u + α)",
+    "Pooled Hawkes (c·b_t + α^T s)"
+  ],
+  "global_start": "2025-01-15",
+  "global_end": "2025-10-31",
+  "base_seed": 42,
+  "total_runs": 216,
+  "elapsed_seconds": 701.662486076355
+}

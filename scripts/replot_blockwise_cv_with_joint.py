@@ -24,24 +24,33 @@ import pandas as pd
 
 CV_DIR = Path("diploma/reports/blockwise_cv")
 JOINT_CSV = Path("diploma/reports/joint_lambda_alpha/joint_14d_per_block.csv")
+POOLED_CSV = Path("diploma/reports/blockwise_cv/staged_on_raw_14d.csv")
 
 
 def main() -> None:
     cv_df = pd.read_csv(CV_DIR / "cv_results.csv")
     joint_df = pd.read_csv(JOINT_CSV)
+    pooled_df = pd.read_csv(POOLED_CSV)
 
     merged = cv_df.merge(
         joint_df[["block_idx", "Joint Hawkes (λ_u + α)"]],
         on="block_idx",
         how="left",
+    ).merge(
+        pooled_df[["block_idx", "Staged-on-raw (c + alpha)"]].rename(
+            columns={"Staged-on-raw (c + alpha)": "Pooled Hawkes (c·b_t + α^T s)"}
+        ),
+        on="block_idx",
+        how="left",
     )
 
-    # Order matches chapter 8 ladder
+    # Order matches chapter 9 ladder
     model_labels = [
         "Global Poisson",
         "Rolling Poisson",
         "Rolling Seasonal",
         "Personalized Gamma-Poisson",
+        "Pooled Hawkes (c·b_t + α^T s)",
         "Scaled-baseline Hawkes",
         "Joint Hawkes (λ_u + α)",
         "GBDT (experimental)",
@@ -65,8 +74,8 @@ def main() -> None:
     # Strip plot
     fig, ax = plt.subplots(figsize=(13.0, 6.6))
     rng = np.random.default_rng(0)
-    # Same color scheme as chapter 8: ladder blue, GBDT orange
-    colors = ["#2E5EAA"] * 6 + ["#D2691E"]
+    # Color scheme: probabilistic models in blue, GBDT orange
+    colors = ["#2E5EAA"] * 7 + ["#D2691E"]
 
     for i, label in enumerate(model_labels):
         vals = merged[label].dropna().to_numpy(dtype=float)
