@@ -50,7 +50,7 @@ $$
 1. пайплайн: `src/diploma_baselines/pipeline.py`;
 2. метрики: `src/diploma_baselines/metrics.py`;
 3. графики: `src/diploma_baselines/plots.py`;
-4. раннер: `scripts/run_user_ll_diagnostics.py`.
+4. раннер: `scripts/compute/run_user_ll_diagnostics.py`.
 
 Артефакты сохраняются в директорию:
 

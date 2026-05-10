@@ -105,8 +105,8 @@
 ## 11.7. Воспроизведение
 
 ```bash
-python scripts/run_train_length_scan.py     # ~23 минуты: ~8 мин feature-build + ~15 мин на 216 прогонов
-python scripts/plot_train_length_scan.py    # перерисовать графики из CSV
+python scripts/compute/run_train_length_scan.py     # ~23 минуты: ~8 мин feature-build + ~15 мин на 216 прогонов
+python scripts/plots/plot_train_length_scan.py    # перерисовать графики из CSV
 ```
 
 Скрипт `run_train_length_scan.py` строит GBDT-feature-panel один раз через `build_feature_panel` из `src/diploma_experimental/gbdt.py` и затем slice-ит её по `(interval_start, train_end, test_end)` для каждого прогона. Это переиспользует тот же `HistGradientBoostingRegressor(loss="poisson", max_depth=5, max_iter=200)`, что и в основном run'е GBDT (`scripts/run_experimental_2_gbdt.py`).

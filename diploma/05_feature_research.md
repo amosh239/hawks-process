@@ -35,7 +35,7 @@
 Код и артефакты:
 
 1. модуль: `src/diploma_baselines/feature_research.py`;
-2. раннер: `scripts/run_experimental_hawkes_feature_research.py`;
+2. раннер: `scripts/compute/run_experimental_hawkes_feature_research.py`;
 3. summary: `diploma/reports/feature_research/summary.json`;
 4. таблицы:
    - `diploma/reports/feature_research/feature_summary.csv`;

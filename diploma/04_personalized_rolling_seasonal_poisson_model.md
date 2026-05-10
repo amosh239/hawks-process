@@ -198,7 +198,7 @@ Split тот же:
 1. модель: `src/diploma_baselines/models/personalized_gamma_poisson.py`;
 2. общий baseline: `src/diploma_baselines/models/rolling_seasonal_poisson.py`;
 3. пайплайн: `src/diploma_baselines/pipeline.py`;
-4. раннер: `scripts/run_personalized_rolling_seasonal_poisson_baseline.py`.
+4. раннер: `scripts/compute/run_personalized_rolling_seasonal_poisson_baseline.py`.
 
 ## 4.8. Дневная динамика
 

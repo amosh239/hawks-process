@@ -129,7 +129,7 @@ $$
 
 Графики и таблица собираются из уже сохранённых `summary.json` каждого эксперимента:
 
-1. скрипт: `scripts/run_ladder_summary.py`;
+1. скрипт: `scripts/plots/run_ladder_summary.py`;
 2. артефакты:
    - `diploma/reports/ladder_summary/test_loglik_ladder.png`;
    - `diploma/reports/ladder_summary/test_nll_per_obs_ladder.png`;

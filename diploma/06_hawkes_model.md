@@ -257,4 +257,4 @@ $$
 
 **Вывод.** На основном split-е выбор `(alpha_l2, scale_l2)` практически не влияет на результат: data-likelihood-выигрыш от Hawkes-надстройки на `~2 \cdot 10^6` user-day сильно превышает регуляризационный штраф во всех значениях этих сеток. Поэтому в работе эти параметры зафиксированы в стандартных значениях `alpha_l2 = 1e-4`, `scale_l2 = 10`, без дальнейшего тюнинга.
 
-Скрипт: [`scripts/run_hawkes_reg_sweeps.py`](../scripts/run_hawkes_reg_sweeps.py); CSV — `diploma/reports/hawkes_reg_sweeps/sweep_alpha_l2.csv`, `sweep_scale_l2.csv`.
+Скрипт: [`scripts/compute/run_hawkes_reg_sweeps.py`](../scripts/compute/run_hawkes_reg_sweeps.py); CSV — `diploma/reports/hawkes_reg_sweeps/sweep_alpha_l2.csv`, `sweep_scale_l2.csv`.

@@ -109,7 +109,7 @@ Split тот же:
 
 1. модель: `src/diploma_baselines/models/rolling_seasonal_poisson.py`;
 2. пайплайн: `src/diploma_baselines/pipeline.py`;
-3. раннер: `scripts/run_rolling_seasonal_poisson_baseline.py`.
+3. раннер: `scripts/compute/run_rolling_seasonal_poisson_baseline.py`.
 
 ## 3.7. Графики
 
@@ -118,12 +118,6 @@ Split тот же:
 ![Rolling seasonal daily aggregate](reports/rolling_seasonal_poisson_baseline/daily_aggregate_analysis_window.png)
 
 По этому графику видно, что модель одновременно удерживает общий уровень рядом с фактической интенсивностью и учитывает более мелкий внутринедельный ритм.
-
-### Профиль по дням недели
-
-![Rolling seasonal weekday profile](reports/rolling_seasonal_poisson_baseline/weekday_profile_with_prediction.png)
-
-На этом графике train и test показаны отдельно не только по факту, но и по prediction. Это важно, потому что rolling baseline меняет общий уровень интенсивности во времени, и поэтому смешивать train и test prediction в один усредненный weekday-профиль было бы некорректно. В исправленной версии видно, что weekday-эффект действительно присутствует, но его амплитуда заметно меньше, чем эффект медленно меняющегося уровня, который уже был пойман rolling baseline.
 
 ## 3.8. Результаты
 

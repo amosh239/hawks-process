@@ -82,9 +82,9 @@
 
 Эксперимент состоит из трёх скриптов:
 
-1. `scripts/run_blockwise_cv.py` — 6 основных моделей (`~11` минут);
-2. `scripts/run_joint_fit_on_14d_block.py` — joint-fit Hawkes на 14d (`~2` минуты);
-3. `scripts/replot_blockwise_cv_with_joint.py` — собирает обе таблицы и перестраивает strip plot (`<5` секунд).
+1. `scripts/compute/run_blockwise_cv.py` — 6 основных моделей (`~11` минут);
+2. `scripts/compute/run_joint_fit_on_14d_block.py` — joint-fit Hawkes на 14d (`~2` минуты);
+3. `scripts/plots/replot_blockwise_cv_with_joint.py` — собирает обе таблицы и перестраивает strip plot (`<5` секунд).
 
 Артефакты:
 

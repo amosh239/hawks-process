@@ -83,7 +83,7 @@ Train/test split также не меняется:
 
 1. модель: `src/diploma_baselines/models/rolling_poisson.py`;
 2. пайплайн: `src/diploma_baselines/pipeline.py`;
-3. раннер: `scripts/run_rolling_poisson_baseline.py`.
+3. раннер: `scripts/compute/run_rolling_poisson_baseline.py`.
 
 Текущий baseline не оценивает параметры через MLE в привычном смысле. Вместо этого он использует фиксированное правило построения прогноза на основе trailing mean.
 

@@ -17,7 +17,7 @@ import sys
 import time
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -40,7 +40,7 @@ from src.diploma_baselines.models import (
     PersonalizedGammaPoissonScaler,
     build_user_states_cache,
 )
-from scripts.run_joint_lambda_alpha_fit import fit_joint  # type: ignore
+from scripts.compute.run_joint_lambda_alpha_fit import fit_joint  # type: ignore
 
 
 HAWKES_FEATURES = tuple(FEATURE_NAMES)

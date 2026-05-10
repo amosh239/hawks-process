@@ -260,7 +260,7 @@ $$
 2. count-метрики: `src/diploma_baselines/metrics.py`;
 3. базовая модель Poisson: `src/diploma_baselines/models/poisson.py`;
 4. графики и пайплайн эксперимента: `src/diploma_baselines/pipeline.py`, `src/diploma_baselines/plots.py`;
-5. точка запуска: `scripts/run_poisson_baseline.py`.
+5. точка запуска: `scripts/compute/run_poisson_baseline.py`.
 
 Такой раздельный код нужен, чтобы дипломный baseline не зависел от текущего исследовательского Hawkes-пайплайна и оставался простым для чтения.
 

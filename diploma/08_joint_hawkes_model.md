@@ -75,7 +75,7 @@ $$
 
 Код:
 
-1. фит-функция `fit_joint`: [`scripts/run_joint_lambda_alpha_fit.py`](../scripts/run_joint_lambda_alpha_fit.py);
+1. фит-функция `fit_joint`: [`scripts/compute/run_joint_lambda_alpha_fit.py`](../scripts/compute/run_joint_lambda_alpha_fit.py);
 2. раннер главы: [`scripts/run_joint_hawkes_ch8.py`](../scripts/run_joint_hawkes_ch8.py);
 3. построение Hawkes-states — `src/diploma_baselines/models/hawkes.py` (`build_basis_states`).
 
