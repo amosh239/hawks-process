@@ -43,6 +43,28 @@ class PooledAdditiveMultiKernelHawkesResult:
 
 
 @dataclass
+class JointHawkesResult:
+    """Output of `fit_joint_hawkes` — joint Poisson MLE for `λ_t = lam_u · b_t + states · α`."""
+
+    lam_u: np.ndarray
+    alpha: np.ndarray
+    train_loss: float
+    converged: bool
+    n_iter: int
+
+
+@dataclass
+class PooledHawkesResult:
+    """Output of `fit_pooled_hawkes` — pooled fit `λ_t = c · b_t + states · α` (no per-user multiplier)."""
+
+    c: float
+    alpha: np.ndarray
+    train_loss: float
+    converged: bool
+    n_iter: int
+
+
+@dataclass
 class UserScaleFitResult:
     scales: np.ndarray
     lower_bound_hits: int
@@ -146,6 +168,117 @@ def fit_pooled_additive_multi_kernel_hawkes(
         feature_names=tuple(feature_names),
         base_scale=base_scale,
         success=success,
+    )
+
+
+def fit_joint_hawkes(
+    user_idx: np.ndarray,
+    y: np.ndarray,
+    b: np.ndarray,
+    states: np.ndarray,
+    n_users: int,
+    lambda_l2: float = 1.0,
+    alpha_l2: float = 1e-4,
+    lambda_init: np.ndarray | None = None,
+    alpha_init: np.ndarray | None = None,
+    max_iter: int = 300,
+) -> JointHawkesResult:
+    """Joint Poisson MLE fit of `λ_t = λ_{u(t)} · b_t + states_t · α`.
+
+    Loss: Poisson NLL + `lambda_l2 · Σ(λ_u − 1)² + alpha_l2 · ‖α‖²`.
+    L-BFGS-B with bounds `λ_u ∈ [0.001, 50]`, `α_j ∈ [0, 10]`.
+    """
+    user_idx = np.asarray(user_idx, dtype=np.int64)
+    y = np.asarray(y, dtype=np.float64)
+    b = np.asarray(b, dtype=np.float64)
+    states = np.asarray(states, dtype=np.float64)
+    n_alpha = int(states.shape[1])
+
+    init_lam = np.ones(n_users) if lambda_init is None else np.asarray(lambda_init, dtype=float).copy()
+    init_alpha = (
+        np.full(n_alpha, 0.01, dtype=float)
+        if alpha_init is None
+        else np.asarray(alpha_init, dtype=float).copy()
+    )
+    init = np.concatenate([init_lam, init_alpha])
+    bounds = [(0.001, 50.0)] * n_users + [(0.0, 10.0)] * n_alpha
+
+    def fg(params: np.ndarray) -> tuple[float, np.ndarray]:
+        lam_u = params[:n_users]
+        alpha = params[n_users:]
+        mu = np.clip(lam_u[user_idx] * b + states @ alpha, 1e-8, None)
+        nll = float(
+            np.sum(mu - y * np.log(mu))
+            + lambda_l2 * np.sum((lam_u - 1.0) ** 2)
+            + alpha_l2 * np.sum(alpha ** 2)
+        )
+        residual = 1.0 - y / mu
+        grad_lam = np.zeros(n_users, dtype=np.float64)
+        np.add.at(grad_lam, user_idx, residual * b)
+        grad_lam += 2.0 * lambda_l2 * (lam_u - 1.0)
+        grad_alpha = states.T @ residual + 2.0 * alpha_l2 * alpha
+        return nll, np.concatenate([grad_lam, grad_alpha])
+
+    res = minimize(
+        lambda p: fg(p)[0], init, method="L-BFGS-B",
+        jac=lambda p: fg(p)[1], bounds=bounds, options={"maxiter": max_iter},
+    )
+    return JointHawkesResult(
+        lam_u=np.asarray(res.x[:n_users], dtype=float),
+        alpha=np.asarray(res.x[n_users:], dtype=float),
+        train_loss=float(res.fun),
+        converged=bool(res.success),
+        n_iter=int(getattr(res, "nit", 0)),
+    )
+
+
+def fit_pooled_hawkes(
+    y: np.ndarray,
+    b: np.ndarray,
+    states: np.ndarray,
+    alpha_l2: float = 1e-4,
+    scale_l2: float = 10.0,
+    c_init: float = 1.0,
+    alpha_init_value: float = 0.01,
+    max_iter: int = 300,
+) -> PooledHawkesResult:
+    """Pooled fit of `λ_t = c · b_t + states_t · α` (single global scale, no per-user multiplier).
+
+    Loss: Poisson NLL + `alpha_l2 · ‖α‖² + scale_l2 · (c − 1)²`.
+    L-BFGS-B with bounds `c ∈ [0.001, 50]`, `α_j ∈ [0, 10]`.
+    """
+    y = np.asarray(y, dtype=np.float64)
+    b = np.asarray(b, dtype=np.float64)
+    states = np.asarray(states, dtype=np.float64)
+    n_alpha = int(states.shape[1])
+
+    init = np.concatenate([[float(c_init)], np.full(n_alpha, float(alpha_init_value))])
+    bounds = [(0.001, 50.0)] + [(0.0, 10.0)] * n_alpha
+
+    def fg(params: np.ndarray) -> tuple[float, np.ndarray]:
+        c = float(params[0])
+        alpha = params[1:]
+        lam = np.clip(c * b + states @ alpha, 1e-8, None)
+        nll = float(
+            np.sum(lam - y * np.log(lam))
+            + alpha_l2 * np.sum(alpha ** 2)
+            + scale_l2 * (c - 1.0) ** 2
+        )
+        residual = 1.0 - y / lam
+        a_grad = states.T @ residual + 2.0 * alpha_l2 * alpha
+        c_grad = float(np.sum(b * residual) + 2.0 * scale_l2 * (c - 1.0))
+        return nll, np.concatenate([[c_grad], a_grad])
+
+    res = minimize(
+        lambda p: fg(p)[0], init, method="L-BFGS-B",
+        jac=lambda p: fg(p)[1], bounds=bounds, options={"maxiter": max_iter},
+    )
+    return PooledHawkesResult(
+        c=float(res.x[0]),
+        alpha=np.asarray(res.x[1:], dtype=float),
+        train_loss=float(res.fun),
+        converged=bool(res.success),
+        n_iter=int(getattr(res, "nit", 0)),
     )
 
 

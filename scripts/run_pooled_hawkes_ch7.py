@@ -50,6 +50,7 @@ from src.diploma_baselines.models import (
     GlobalRollingSeasonalPoissonModel,
     PersonalizedGammaPoissonScaler,
     build_basis_states,
+    fit_pooled_hawkes as _fit_pooled_hawkes,
 )
 
 
@@ -75,24 +76,12 @@ OUT_DIR = Path("diploma/reports/07_pooled_hawkes")
 
 
 def fit_pooled_hawkes(X, y, b_raw, alpha_l2=ALPHA_L2, scale_l2=SCALE_L2, max_iter=MAX_ITER):
-    n_alpha = X.shape[1]
-
-    def fg(p):
-        c = float(p[0]); alpha = np.asarray(p[1:], dtype=float)
-        lam = np.clip(c * b_raw + X @ alpha, 1e-8, None)
-        nll = float(np.sum(lam - y * np.log(lam))
-                    + alpha_l2 * np.sum(alpha**2)
-                    + scale_l2 * (c - 1.0) ** 2)
-        d = 1.0 - y / lam
-        a_grad = X.T @ d + 2.0 * alpha_l2 * alpha
-        c_grad = float(np.sum(b_raw * d) + 2.0 * scale_l2 * (c - 1.0))
-        return nll, np.concatenate([[c_grad], a_grad])
-
-    init = np.concatenate([[1.0], np.full(n_alpha, 0.01)])
-    bounds = [(0.001, 50.0)] + [(0.0, 10.0)] * n_alpha
-    res = minimize(lambda p: fg(p)[0], init, method="L-BFGS-B",
-                   jac=lambda p: fg(p)[1], bounds=bounds, options={"maxiter": max_iter})
-    return float(res.x[0]), np.asarray(res.x[1:], dtype=float), bool(res.success)
+    """Thin wrapper that returns the legacy `(c, alpha, ok)` triple expected here."""
+    res = _fit_pooled_hawkes(
+        y=y, b=b_raw, states=X,
+        alpha_l2=alpha_l2, scale_l2=scale_l2, max_iter=max_iter,
+    )
+    return res.c, res.alpha, res.converged
 
 
 def build_states_for_dates(full_df, target_dates_per_row, half_lives, beta):

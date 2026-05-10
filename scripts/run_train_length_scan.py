@@ -45,7 +45,9 @@ from src.diploma_baselines.models import (
     GlobalRollingSeasonalPoissonModel,
     PersonalizedGammaPoissonScaler,
     build_basis_states,
+    fit_joint_hawkes,
     fit_pooled_additive_multi_kernel_hawkes,
+    fit_pooled_hawkes,
     predict_pooled_additive_multi_kernel_hawkes,
 )
 from src.diploma_experimental.gbdt import SOURCE_FEATURES, build_feature_panel
@@ -78,69 +80,6 @@ MODEL_LABELS = [
     "Pooled Hawkes (c·b_t + α^T s)",
     "GBDT (experimental)",
 ]
-
-
-# ----------------------------------------------------------------------
-# Joint and Pooled Hawkes fit helpers (no per-block boilerplate)
-# ----------------------------------------------------------------------
-def fit_joint_hawkes(
-    user_idx: np.ndarray,
-    y: np.ndarray,
-    b: np.ndarray,
-    states: np.ndarray,
-    n_users: int,
-    lambda_l2: float = 1.0,
-    alpha_l2: float = 1e-4,
-    max_iter: int = 200,
-):
-    n_alpha = states.shape[1]
-
-    def fg(p):
-        lam_u = p[:n_users]
-        alpha = p[n_users:]
-        per_row = lam_u[user_idx]
-        lam = np.clip(per_row * b + states @ alpha, 1e-8, None)
-        nll = float(
-            np.sum(lam - y * np.log(lam))
-            + lambda_l2 * np.sum((lam_u - 1.0) ** 2)
-            + alpha_l2 * np.sum(alpha**2)
-        )
-        d = 1.0 - y / lam
-        a_grad = states.T @ d + 2.0 * alpha_l2 * alpha
-        l_grad = np.bincount(user_idx, weights=b * d, minlength=n_users) + 2.0 * lambda_l2 * (lam_u - 1.0)
-        return nll, np.concatenate([l_grad, a_grad])
-
-    init = np.concatenate([np.ones(n_users), np.full(n_alpha, 0.01)])
-    bounds = [(0.001, 50.0)] * n_users + [(0.0, 10.0)] * n_alpha
-    res = minimize(lambda p: fg(p)[0], init, method="L-BFGS-B",
-                   jac=lambda p: fg(p)[1], bounds=bounds, options={"maxiter": max_iter})
-    return res.x[:n_users], res.x[n_users:]
-
-
-def fit_pooled_hawkes(
-    y: np.ndarray, b: np.ndarray, states: np.ndarray,
-    alpha_l2: float = 1e-4, scale_l2: float = 10.0, max_iter: int = 300,
-):
-    n_alpha = states.shape[1]
-
-    def fg(p):
-        c = float(p[0]); alpha = np.asarray(p[1:], dtype=float)
-        lam = np.clip(c * b + states @ alpha, 1e-8, None)
-        nll = float(
-            np.sum(lam - y * np.log(lam))
-            + alpha_l2 * np.sum(alpha**2)
-            + scale_l2 * (c - 1.0) ** 2
-        )
-        d = 1.0 - y / lam
-        a_grad = states.T @ d + 2.0 * alpha_l2 * alpha
-        c_grad = float(np.sum(b * d) + 2.0 * scale_l2 * (c - 1.0))
-        return nll, np.concatenate([[c_grad], a_grad])
-
-    init = np.concatenate([[1.0], np.full(n_alpha, 0.01)])
-    bounds = [(0.001, 50.0)] + [(0.0, 10.0)] * n_alpha
-    res = minimize(lambda p: fg(p)[0], init, method="L-BFGS-B",
-                   jac=lambda p: fg(p)[1], bounds=bounds, options={"maxiter": max_iter})
-    return float(res.x[0]), np.asarray(res.x[1:], dtype=float)
 
 
 # ----------------------------------------------------------------------
@@ -294,7 +233,7 @@ def evaluate_interval(
         [uid_to_idx.get(int(u), -1) for u in test_df["user_id"].to_numpy()], dtype=int
     )
     try:
-        lam_u, alpha = fit_joint_hawkes(
+        joint_res = fit_joint_hawkes(
             user_idx=train_user_idx,
             y=y_train,
             b=base_train,
@@ -304,6 +243,7 @@ def evaluate_interval(
             alpha_l2=1e-4,
             max_iter=200,
         )
+        lam_u, alpha = joint_res.lam_u, joint_res.alpha
         lam_u_for_test = np.where(test_user_idx >= 0, lam_u[np.maximum(test_user_idx, 0)], 1.0)
         lam_test = lam_u_for_test * base_test + X_test.astype(float) @ alpha
         out["Joint Hawkes (λ_u + α)"] = float(
@@ -320,10 +260,11 @@ def evaluate_interval(
 
     # 7. Pooled Hawkes (c · b_t + α^T s)
     try:
-        c_fit, alpha_fit = fit_pooled_hawkes(
+        pooled_res = fit_pooled_hawkes(
             y=y_train, b=base_train, states=X_train.astype(float),
             alpha_l2=1e-4, scale_l2=10.0, max_iter=300,
         )
+        c_fit, alpha_fit = pooled_res.c, pooled_res.alpha
         lam_test = c_fit * base_test + X_test.astype(float) @ alpha_fit
         out["Pooled Hawkes (c·b_t + α^T s)"] = float(
             evaluate_count_forecast(y_test, np.clip(lam_test, 1e-8, None))["mean_poisson_nll"]

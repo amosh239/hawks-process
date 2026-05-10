@@ -44,6 +44,7 @@ from src.diploma_baselines.models import (
     FEATURE_NAMES,
     GlobalRollingSeasonalPoissonModel,
     build_basis_states,
+    fit_pooled_hawkes,
 )
 
 
@@ -59,28 +60,6 @@ TEST_START = pd.Timestamp("2025-08-10")
 TEST_END = pd.Timestamp("2025-09-30")
 
 OUTPUT_DIR = Path("diploma/reports/pooled_hawkes_ch6")
-
-
-def fit_pooled_hawkes(X, y, b_raw, alpha_l2=1e-4, scale_l2=10.0, max_iter=500):
-    """Fit lambda = c * b_t + alpha^T s_{u,t}. Returns (c, alpha, train_loss, success)."""
-    n_alpha = X.shape[1]
-
-    def fg(p):
-        c = float(p[0]); alpha = np.asarray(p[1:], dtype=float)
-        lam = np.clip(c * b_raw + X @ alpha, 1e-8, None)
-        nll = float(np.sum(lam - y * np.log(lam))
-                    + alpha_l2 * np.sum(alpha**2)
-                    + scale_l2 * (c - 1.0) ** 2)
-        d = 1.0 - y / lam
-        a_grad = X.T @ d + 2.0 * alpha_l2 * alpha
-        c_grad = float(np.sum(b_raw * d) + 2.0 * scale_l2 * (c - 1.0))
-        return nll, np.concatenate([[c_grad], a_grad])
-
-    init = np.concatenate([[1.0], np.full(n_alpha, 0.01)])
-    bounds = [(0.001, 50.0)] + [(0.0, 10.0)] * n_alpha
-    res = minimize(lambda p: fg(p)[0], init, method="L-BFGS-B",
-                   jac=lambda p: fg(p)[1], bounds=bounds, options={"maxiter": max_iter})
-    return float(res.x[0]), np.asarray(res.x[1:], dtype=float), float(res.fun), bool(res.success)
 
 
 def main():
@@ -141,7 +120,12 @@ def main():
 
     print("\nFitting pooled Hawkes (c, alpha)...")
     t0 = time.time()
-    c_fit, alpha_fit, train_loss, ok = fit_pooled_hawkes(X_train.astype(float), y_train, b_train)
+    pooled_res = fit_pooled_hawkes(
+        y=y_train, b=b_train, states=X_train.astype(float), max_iter=500,
+    )
+    c_fit, alpha_fit, train_loss, ok = (
+        pooled_res.c, pooled_res.alpha, pooled_res.train_loss, pooled_res.converged,
+    )
     print(f"  done in {time.time() - t0:.1f}s. converged={ok}, train_loss={train_loss:.2f}")
     print(f"  c = {c_fit:.6f}")
     print(f"  ||alpha|| = {np.linalg.norm(alpha_fit):.6f}")

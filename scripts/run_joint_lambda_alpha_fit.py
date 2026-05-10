@@ -84,77 +84,33 @@ def fit_joint(
     max_iter: int = 300,
     verbose: bool = True,
 ) -> tuple[np.ndarray, np.ndarray, dict]:
-    """Joint Poisson-MLE fit:
-        lam_t = lambda_{u(t)} * b_t + states_t @ alpha
-    with L2 shrinkage:
-        + lambda_l2 * sum((lambda_u - 1)**2)
-        + alpha_l2  * sum(alpha**2)
+    """Backward-compat wrapper around `fit_joint_hawkes` from the canonical module.
+
+    Returns the legacy `(lam_u, alpha, info_dict)` tuple. `n_alpha` and
+    `verbose` are accepted but not used: `n_alpha` is inferred from `states`
+    and per-iteration printing was only ever a debugging aid.
     """
-    n_obs = len(y)
-    user_idx = np.asarray(user_idx, dtype=np.int64)
-    y = np.asarray(y, dtype=np.float64)
-    b = np.asarray(b, dtype=np.float64)
-    states = np.asarray(states, dtype=np.float64)
+    from src.diploma_baselines.models import fit_joint_hawkes
 
-    if lambda_init is None:
-        init_lam = np.ones(n_users)
-    else:
-        init_lam = np.asarray(lambda_init, dtype=float).copy()
-    if alpha_init is None:
-        init_alpha = np.full(n_alpha, 0.01, dtype=float)
-    else:
-        init_alpha = np.asarray(alpha_init, dtype=float).copy()
-
-    init = np.concatenate([init_lam, init_alpha])
-    bounds = [(0.001, 50.0)] * n_users + [(0.0, 10.0)] * n_alpha
-
-    state = {"iter": 0}
-
-    def _objective(params: np.ndarray) -> tuple[float, np.ndarray]:
-        lam_u = params[:n_users]
-        alpha = params[n_users:]
-
-        mu = lam_u[user_idx] * b + states @ alpha
-        mu_clipped = np.clip(mu, 1e-8, None)
-
-        nll = float(
-            np.sum(mu_clipped - y * np.log(mu_clipped))
-            + lambda_l2 * np.sum((lam_u - 1.0) ** 2)
-            + alpha_l2 * np.sum(alpha**2)
-        )
-
-        residual = 1.0 - y / mu_clipped  # shape (n_obs,)
-
-        # gradient w.r.t. lambda_u
-        contribs = residual * b
-        grad_lam = np.zeros(n_users, dtype=np.float64)
-        np.add.at(grad_lam, user_idx, contribs)
-        grad_lam += 2.0 * lambda_l2 * (lam_u - 1.0)
-
-        # gradient w.r.t. alpha
-        grad_alpha = states.T @ residual + 2.0 * alpha_l2 * alpha
-
-        state["iter"] += 1
-        if verbose and state["iter"] <= 5:
-            print(f"    iter={state['iter']:>3} nll={nll:.4f}")
-        elif verbose and state["iter"] % 25 == 0:
-            print(f"    iter={state['iter']:>3} nll={nll:.4f}")
-
-        return nll, np.concatenate([grad_lam, grad_alpha])
-
-    res = minimize(
-        _objective, init, method="L-BFGS-B", jac=True, bounds=bounds,
-        options={"maxiter": max_iter, "gtol": 1e-7, "ftol": 1e-9},
+    res = fit_joint_hawkes(
+        user_idx=user_idx,
+        y=y,
+        b=b,
+        states=states,
+        n_users=n_users,
+        lambda_l2=lambda_l2,
+        alpha_l2=alpha_l2,
+        lambda_init=lambda_init,
+        alpha_init=alpha_init,
+        max_iter=max_iter,
     )
-    lam_u_fit = res.x[:n_users]
-    alpha_fit = res.x[n_users:]
     info = {
-        "converged": bool(res.success),
-        "n_iter": int(res.nit),
-        "final_nll": float(res.fun),
-        "message": str(res.message),
+        "converged": res.converged,
+        "n_iter": res.n_iter,
+        "final_nll": res.train_loss,
+        "message": "ok" if res.converged else "not converged",
     }
-    return lam_u_fit, alpha_fit, info
+    return res.lam_u, res.alpha, info
 
 
 def main() -> None:
