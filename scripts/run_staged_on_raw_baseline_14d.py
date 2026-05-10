@@ -41,7 +41,8 @@ from src.diploma_baselines.metrics import evaluate_count_forecast
 from src.diploma_baselines.models import (
     FEATURE_NAMES,
     GlobalRollingSeasonalPoissonModel,
-    build_basis_states,
+    build_user_states_cache,
+    fit_pooled_hawkes as _fit_pooled_hawkes,
 )
 
 
@@ -57,24 +58,12 @@ TRAIN_LEN = 14
 
 
 def fit_staged_on_raw(X, y, b_raw, alpha_l2=1e-4, scale_l2=10.0, max_iter=400):
-    n_alpha = X.shape[1]
-
-    def fg(p):
-        c = float(p[0]); alpha = np.asarray(p[1:], dtype=float)
-        lam = np.clip(c * b_raw + X @ alpha, 1e-8, None)
-        nll = float(np.sum(lam - y * np.log(lam))
-                    + alpha_l2 * np.sum(alpha**2)
-                    + scale_l2 * (c - 1.0) ** 2)
-        d = 1.0 - y / lam
-        a_grad = X.T @ d + 2.0 * alpha_l2 * alpha
-        c_grad = float(np.sum(b_raw * d) + 2.0 * scale_l2 * (c - 1.0))
-        return nll, np.concatenate([[c_grad], a_grad])
-
-    init = np.concatenate([[1.0], np.full(n_alpha, 0.01)])
-    bounds = [(0.001, 50.0)] + [(0.0, 10.0)] * n_alpha
-    res = minimize(lambda p: fg(p)[0], init, method="L-BFGS-B",
-                   jac=lambda p: fg(p)[1], bounds=bounds, options={"maxiter": max_iter})
-    return float(res.x[0]), np.asarray(res.x[1:], dtype=float), bool(res.success)
+    """Thin wrapper around the canonical `fit_pooled_hawkes` returning legacy `(c, α, ok)`."""
+    res = _fit_pooled_hawkes(
+        y=y, b=b_raw, states=X,
+        alpha_l2=alpha_l2, scale_l2=scale_l2, max_iter=max_iter,
+    )
+    return res.c, res.alpha, res.converged
 
 
 def main():
@@ -87,19 +76,10 @@ def main():
     print(f"  loaded {len(full_df):,} rows")
 
     daily_mean_full = full_df.groupby("event_date")[TARGET_COL].mean().sort_index()
-    beta = np.log(2.0) / np.asarray(HALF_LIVES, dtype=float)
 
     print("\nBuilding Hawkes states from full history...")
-    user_states_per_id: dict[int, dict] = {}
-    for user_id, full_user in full_df.groupby("user_id", sort=False):
-        x_full = full_user.loc[:, list(HAWKES_FEATURES)].to_numpy(dtype=float)
-        states_full = build_basis_states(x_full, beta).reshape(len(full_user), -1).astype(np.float32)
-        user_states_per_id[int(user_id)] = {
-            "states_full": states_full,
-            "dates": full_user["event_date"].to_numpy(dtype="datetime64[ns]"),
-        }
-    n_alpha = next(iter(user_states_per_id.values()))["states_full"].shape[1]
-    print(f"  n_alpha = {n_alpha}")
+    cache = build_user_states_cache(full_df, features=HAWKES_FEATURES, half_lives=HALF_LIVES)
+    print(f"  n_alpha = {cache.n_alpha}")
 
     blocks = []
     cursor = CV_GLOBAL_START
@@ -136,22 +116,8 @@ def main():
         b_train = rs.predict_for_dates(block_train_df["event_date"]).to_numpy(dtype=float)
         b_test = rs.predict_for_dates(block_test_df["event_date"]).to_numpy(dtype=float)
 
-        # Build Hawkes states for train and test rows
-        def build_states(df, dates_col_name="event_date"):
-            states_arr = np.zeros((len(df), n_alpha), dtype=np.float32)
-            for uid, idx_in_block in df.groupby("user_id", sort=False).indices.items():
-                info = user_states_per_id[int(uid)]
-                full_dates = info["dates"]
-                wanted_dates = df[dates_col_name].to_numpy(dtype="datetime64[ns]")[idx_in_block]
-                full_to_idx = {pd.Timestamp(d).normalize(): i for i, d in enumerate(full_dates)}
-                rows_in_full = np.array(
-                    [full_to_idx[pd.Timestamp(d).normalize()] for d in wanted_dates], dtype=int
-                )
-                states_arr[idx_in_block] = info["states_full"][rows_in_full]
-            return states_arr
-
-        X_train = build_states(block_train_df).astype(float)
-        X_test = build_states(block_test_df).astype(float)
+        X_train = cache.gather_for(block_train_df).astype(float)
+        X_test = cache.gather_for(block_test_df).astype(float)
         y_train = block_train_df[TARGET_COL].to_numpy(dtype=float)
         y_test = block_test_df[TARGET_COL].to_numpy(dtype=float)
 

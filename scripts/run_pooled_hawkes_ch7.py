@@ -49,7 +49,7 @@ from src.diploma_baselines.models import (
     FEATURE_NAMES,
     GlobalRollingSeasonalPoissonModel,
     PersonalizedGammaPoissonScaler,
-    build_basis_states,
+    build_user_states_cache,
     fit_pooled_hawkes as _fit_pooled_hawkes,
 )
 
@@ -84,44 +84,10 @@ def fit_pooled_hawkes(X, y, b_raw, alpha_l2=ALPHA_L2, scale_l2=SCALE_L2, max_ite
     return res.c, res.alpha, res.converged
 
 
-def build_states_for_dates(full_df, target_dates_per_row, half_lives, beta):
-    n_alpha = len(HAWKES_FEATURES) * len(half_lives)
-    out = np.zeros((len(target_dates_per_row), n_alpha), dtype=np.float32)
-    return out
-
-
 def prepare_states(full_df, train_df, test_df, half_lives):
     """Build Hawkes states for train and test rows, given a half_lives tuple."""
-    beta = np.log(2.0) / np.asarray(half_lives, dtype=float)
-    n_alpha = len(HAWKES_FEATURES) * len(half_lives)
-
-    train_dates = train_df["event_date"].to_numpy(dtype="datetime64[ns]")
-    test_dates = test_df["event_date"].to_numpy(dtype="datetime64[ns]")
-
-    X_train = np.zeros((len(train_df), n_alpha), dtype=np.float32)
-    X_test = np.zeros((len(test_df), n_alpha), dtype=np.float32)
-
-    train_groups = train_df.groupby("user_id", sort=False).indices
-    test_groups = test_df.groupby("user_id", sort=False).indices
-
-    for user_id, full_user in full_df.groupby("user_id", sort=False):
-        x_full = full_user.loc[:, list(HAWKES_FEATURES)].to_numpy(dtype=float)
-        states_full = build_basis_states(x_full, beta).reshape(len(full_user), -1).astype(np.float32)
-        full_dates = full_user["event_date"].to_numpy(dtype="datetime64[ns]")
-        full_to_idx = {pd.Timestamp(d).normalize(): i for i, d in enumerate(full_dates)}
-
-        if int(user_id) in train_groups:
-            idx_in_block = train_groups[int(user_id)]
-            wanted = train_dates[idx_in_block]
-            rows_in_full = np.array([full_to_idx[pd.Timestamp(d).normalize()] for d in wanted], dtype=int)
-            X_train[idx_in_block] = states_full[rows_in_full]
-        if int(user_id) in test_groups:
-            idx_in_block = test_groups[int(user_id)]
-            wanted = test_dates[idx_in_block]
-            rows_in_full = np.array([full_to_idx[pd.Timestamp(d).normalize()] for d in wanted], dtype=int)
-            X_test[idx_in_block] = states_full[rows_in_full]
-
-    return X_train.astype(float), X_test.astype(float)
+    cache = build_user_states_cache(full_df, features=HAWKES_FEATURES, half_lives=half_lives)
+    return cache.gather_for(train_df).astype(float), cache.gather_for(test_df).astype(float)
 
 
 def per_user_loglik(user_ids, y, lam):

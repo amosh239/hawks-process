@@ -33,7 +33,7 @@ from src.diploma_baselines.data import load_daily_grid
 from src.diploma_baselines.models import (
     FEATURE_NAMES,
     GlobalRollingSeasonalPoissonModel,
-    build_basis_states,
+    build_user_states_cache,
 )
 
 from scripts.run_joint_lambda_alpha_fit import fit_joint  # type: ignore
@@ -61,18 +61,10 @@ def main() -> None:
     print(f"  loaded {len(full_df):,} rows")
 
     daily_mean_full = full_df.groupby("event_date")[TARGET_COL].mean().sort_index()
-    beta = np.log(2.0) / np.asarray(HALF_LIVES, dtype=float)
 
     print("\nBuilding Hawkes states from full history...")
-    user_states_per_id: dict[int, dict] = {}
-    for user_id, full_user in full_df.groupby("user_id", sort=False):
-        x_full = full_user.loc[:, list(HAWKES_FEATURES)].to_numpy(dtype=float)
-        states_full = build_basis_states(x_full, beta).reshape(len(full_user), -1).astype(np.float32)
-        user_states_per_id[int(user_id)] = {
-            "states_full": states_full,
-            "dates": full_user["event_date"].to_numpy(dtype="datetime64[ns]"),
-        }
-    n_alpha = next(iter(user_states_per_id.values()))["states_full"].shape[1]
+    cache = build_user_states_cache(full_df, features=HAWKES_FEATURES, half_lives=HALF_LIVES)
+    n_alpha = cache.n_alpha
 
     blocks = []
     cursor = CV_GLOBAL_START
@@ -104,17 +96,7 @@ def main() -> None:
         )
         base_train = rs_block.predict_for_dates(block_train_df["event_date"]).to_numpy(dtype=float)
 
-        train_dates = block_train_df["event_date"].to_numpy(dtype="datetime64[ns]")
-        states_train = np.zeros((len(block_train_df), n_alpha), dtype=np.float32)
-        for uid, idx_in_block in block_train_df.groupby("user_id", sort=False).indices.items():
-            info = user_states_per_id[int(uid)]
-            full_dates = info["dates"]
-            wanted_dates = train_dates[idx_in_block]
-            full_to_idx = {pd.Timestamp(d).normalize(): i for i, d in enumerate(full_dates)}
-            rows_in_full = np.array(
-                [full_to_idx[pd.Timestamp(d).normalize()] for d in wanted_dates], dtype=int
-            )
-            states_train[idx_in_block] = info["states_full"][rows_in_full]
+        states_train = cache.gather_for(block_train_df)
 
         train_uids = block_train_df["user_id"].to_numpy()
         unique_train_uids, train_user_idx = np.unique(train_uids, return_inverse=True)
@@ -144,17 +126,7 @@ def main() -> None:
         ].copy()
 
         base_test = rs_block.predict_for_dates(block_test_df["event_date"]).to_numpy(dtype=float)
-        test_dates = block_test_df["event_date"].to_numpy(dtype="datetime64[ns]")
-        states_test = np.zeros((len(block_test_df), n_alpha), dtype=np.float32)
-        for uid, idx_in_block in block_test_df.groupby("user_id", sort=False).indices.items():
-            info = user_states_per_id[int(uid)]
-            full_dates = info["dates"]
-            wanted_dates = test_dates[idx_in_block]
-            full_to_idx = {pd.Timestamp(d).normalize(): i for i, d in enumerate(full_dates)}
-            rows_in_full = np.array(
-                [full_to_idx[pd.Timestamp(d).normalize()] for d in wanted_dates], dtype=int
-            )
-            states_test[idx_in_block] = info["states_full"][rows_in_full]
+        states_test = cache.gather_for(block_test_df)
 
         test_uids = block_test_df["user_id"].to_numpy()
         uid_to_idx = {int(u): i for i, u in enumerate(unique_train_uids)}

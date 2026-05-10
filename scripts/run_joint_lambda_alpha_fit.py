@@ -47,7 +47,7 @@ from src.diploma_baselines.models import (
     FEATURE_NAMES,
     GlobalRollingSeasonalPoissonModel,
     PersonalizedGammaPoissonScaler,
-    build_basis_states,
+    build_user_states_cache,
     fit_pooled_additive_multi_kernel_hawkes,
     predict_pooled_additive_multi_kernel_hawkes,
 )
@@ -139,36 +139,14 @@ def main() -> None:
     base_test = rs_model.predict_for_dates(split.test["event_date"]).to_numpy(dtype=float)
 
     # === Hawkes states (warmed up from full history) ===
-    beta = np.log(2.0) / np.asarray(HALF_LIVES, dtype=float)
     print("\nBuilding Hawkes states from full history...")
-    user_states_per_id: dict[int, dict] = {}
-    for user_id, full_user in full_df.groupby("user_id", sort=False):
-        x_full = full_user.loc[:, list(HAWKES_FEATURES)].to_numpy(dtype=float)
-        states_full = build_basis_states(x_full, beta).reshape(len(full_user), -1).astype(np.float32)
-        user_states_per_id[int(user_id)] = {
-            "states_full": states_full,
-            "dates": full_user["event_date"].to_numpy(dtype="datetime64[ns]"),
-        }
-    n_alpha = next(iter(user_states_per_id.values()))["states_full"].shape[1]
-    print(f"  {len(user_states_per_id):,} users, n_alpha = {n_alpha}")
-
-    def gather_states_for(df: pd.DataFrame) -> np.ndarray:
-        dates = df["event_date"].to_numpy(dtype="datetime64[ns]")
-        out = np.zeros((len(df), n_alpha), dtype=np.float32)
-        for uid, idx_in_block in df.groupby("user_id", sort=False).indices.items():
-            info = user_states_per_id[int(uid)]
-            full_dates = info["dates"]
-            wanted_dates = dates[idx_in_block]
-            full_to_idx = {pd.Timestamp(d).normalize(): i for i, d in enumerate(full_dates)}
-            rows_in_full = np.array(
-                [full_to_idx[pd.Timestamp(d).normalize()] for d in wanted_dates], dtype=int
-            )
-            out[idx_in_block] = info["states_full"][rows_in_full]
-        return out
+    cache = build_user_states_cache(full_df, features=HAWKES_FEATURES, half_lives=HALF_LIVES)
+    n_alpha = cache.n_alpha
+    print(f"  {len(cache.states_per_user):,} users, n_alpha = {n_alpha}")
 
     print("\nGathering states for train and test...")
-    states_train = gather_states_for(split.train)
-    states_test = gather_states_for(split.test)
+    states_train = cache.gather_for(split.train)
+    states_test = cache.gather_for(split.test)
     print(f"  states_train shape = {states_train.shape}, states_test shape = {states_test.shape}")
 
     # === Build user index 0..n_users-1 from sorted unique IDs in TRAIN

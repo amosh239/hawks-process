@@ -44,7 +44,8 @@ from src.diploma_baselines.models import (
     GlobalRollingMeanPoissonModel,
     GlobalRollingSeasonalPoissonModel,
     PersonalizedGammaPoissonScaler,
-    build_basis_states,
+    UserStatesCache,
+    build_user_states_cache,
     fit_joint_hawkes,
     fit_pooled_additive_multi_kernel_hawkes,
     fit_pooled_hawkes,
@@ -90,7 +91,7 @@ def evaluate_interval(
     daily_mean_full: pd.Series,
     interval_start: pd.Timestamp,
     n_days: int,
-    user_states_cache: dict,
+    user_states_cache: UserStatesCache,
     gbdt_x_full: np.ndarray | None = None,
     gbdt_dates_full: np.ndarray | None = None,
     gbdt_targets_full: np.ndarray | None = None,
@@ -151,25 +152,10 @@ def evaluate_interval(
     out["Personalized Gamma-Poisson"] = float(evaluate_count_forecast(y_test, test_pers)["mean_poisson_nll"])
 
     # Build Hawkes states for train and test from cache
-    train_dates = train_df["event_date"].to_numpy(dtype="datetime64[ns]")
-    test_dates = test_df["event_date"].to_numpy(dtype="datetime64[ns]")
-    n_alpha = len(HAWKES_FEATURES) * len(HALF_LIVES)
-    X_train = np.zeros((len(train_df), n_alpha), dtype=np.float32)
-    X_test = np.zeros((len(test_df), n_alpha), dtype=np.float32)
-
+    X_train = user_states_cache.gather_for(train_df)
+    X_test = user_states_cache.gather_for(test_df)
     train_groups = train_df.groupby("user_id", sort=False).indices
     test_groups = test_df.groupby("user_id", sort=False).indices
-
-    for uid, idx in train_groups.items():
-        info = user_states_cache[int(uid)]
-        wanted = train_dates[idx]
-        rows = np.array([info["dates_to_idx"][pd.Timestamp(d).normalize()] for d in wanted], dtype=int)
-        X_train[idx] = info["states"][rows]
-    for uid, idx in test_groups.items():
-        info = user_states_cache[int(uid)]
-        wanted = test_dates[idx]
-        rows = np.array([info["dates_to_idx"][pd.Timestamp(d).normalize()] for d in wanted], dtype=int)
-        X_test[idx] = info["states"][rows]
 
     # 5. Scaled-baseline Hawkes (staged: base = train_pers, c + alpha)
     train_state_blocks: list = []
@@ -362,17 +348,10 @@ def main():
 
     # Build Hawkes states cache once (per-user, exp-decay)
     print("Building Hawkes states cache...")
-    beta = np.log(2.0) / np.asarray(HALF_LIVES, dtype=float)
-    user_states_cache: dict = {}
-    for user_id, full_user in full_df.groupby("user_id", sort=False):
-        x_full = full_user.loc[:, list(HAWKES_FEATURES)].to_numpy(dtype=float)
-        states_full = build_basis_states(x_full, beta).reshape(len(full_user), -1).astype(np.float32)
-        full_dates = full_user["event_date"].to_numpy(dtype="datetime64[ns]")
-        user_states_cache[int(user_id)] = {
-            "states": states_full,
-            "dates_to_idx": {pd.Timestamp(d).normalize(): i for i, d in enumerate(full_dates)},
-        }
-    print(f"  cached states for {len(user_states_cache):,} users")
+    user_states_cache = build_user_states_cache(
+        full_df, features=HAWKES_FEATURES, half_lives=HALF_LIVES,
+    )
+    print(f"  cached states for {len(user_states_cache.states_per_user):,} users")
 
     # === Run scan ===
     rows: list[dict] = []

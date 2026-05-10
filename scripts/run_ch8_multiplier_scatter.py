@@ -38,7 +38,7 @@ from src.diploma_baselines.models import (
     FEATURE_NAMES,
     GlobalRollingSeasonalPoissonModel,
     PersonalizedGammaPoissonScaler,
-    build_basis_states,
+    build_user_states_cache,
 )
 from scripts.run_joint_lambda_alpha_fit import fit_joint  # type: ignore
 
@@ -96,26 +96,14 @@ def main():
 
     # === Joint Hawkes (γ=1) -> lambda_u per user ===
     print("Building Hawkes states for train...")
-    beta = np.log(2.0) / np.asarray(HALF_LIVES, dtype=float)
-    n_alpha = len(HAWKES_FEATURES) * len(HALF_LIVES)
+    cache = build_user_states_cache(full_df, features=HAWKES_FEATURES, half_lives=HALF_LIVES)
+    n_alpha = cache.n_alpha
 
     train_uids = train_df["user_id"].to_numpy()
     unique_train_uids, train_user_idx = np.unique(train_uids, return_inverse=True)
     n_users = int(len(unique_train_uids))
 
-    states_train = np.zeros((len(train_df), n_alpha), dtype=np.float32)
-    train_dates = train_df["event_date"].to_numpy(dtype="datetime64[ns]")
-    for user_id, full_user in full_df.groupby("user_id", sort=False):
-        x_full = full_user.loc[:, list(HAWKES_FEATURES)].to_numpy(dtype=float)
-        states_full = build_basis_states(x_full, beta).reshape(len(full_user), -1).astype(np.float32)
-        full_dates = full_user["event_date"].to_numpy(dtype="datetime64[ns]")
-        full_to_idx = {pd.Timestamp(d).normalize(): i for i, d in enumerate(full_dates)}
-        groups = train_df.groupby("user_id", sort=False).indices
-        if int(user_id) in groups:
-            idx = groups[int(user_id)]
-            wanted = train_dates[idx]
-            rows_in_full = np.array([full_to_idx[pd.Timestamp(d).normalize()] for d in wanted], dtype=int)
-            states_train[idx] = states_full[rows_in_full]
+    states_train = cache.gather_for(train_df)
 
     print("Fitting joint Hawkes (γ=1)...")
     lam_u_fit, alpha_fit, info = fit_joint(

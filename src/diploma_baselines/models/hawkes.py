@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
+import pandas as pd
 from scipy.optimize import minimize
 
 
@@ -62,6 +63,75 @@ class PooledHawkesResult:
     train_loss: float
     converged: bool
     n_iter: int
+
+
+@dataclass
+class UserStatesCache:
+    """Per-user, full-history Hawkes states cached for fast `(user_id, date)` lookup.
+
+    Use `build_user_states_cache(...)` to construct, then `gather_for(df)` to
+    pull a flat `(len(df), n_alpha)` matrix aligned to df rows.
+    """
+
+    n_alpha: int
+    feature_names: tuple[str, ...]
+    half_lives: tuple[float, ...]
+    states_per_user: dict[int, np.ndarray]
+    date_idx_per_user: dict[int, dict[pd.Timestamp, int]]
+
+    def gather_for(self, df: pd.DataFrame) -> np.ndarray:
+        out = np.zeros((len(df), self.n_alpha), dtype=np.float32)
+        if len(df) == 0:
+            return out
+        dates = df["event_date"].to_numpy(dtype="datetime64[ns]")
+        for uid, idx in df.groupby("user_id", sort=False).indices.items():
+            states = self.states_per_user[int(uid)]
+            date_idx = self.date_idx_per_user[int(uid)]
+            wanted = dates[idx]
+            rows = np.array(
+                [date_idx[pd.Timestamp(d).normalize()] for d in wanted], dtype=int
+            )
+            out[idx] = states[rows]
+        return out
+
+
+def build_user_states_cache(
+    full_df: pd.DataFrame,
+    features: list[str] | tuple[str, ...] = tuple(FEATURE_NAMES),
+    half_lives: tuple[float, ...] = (1.0, 3.0),
+) -> UserStatesCache:
+    """Build per-user exp-decay Hawkes states for the full panel.
+
+    History accumulates within each user across the entire `full_df`, including
+    pre-analysis warmup days; callers then index into the result by
+    `(user_id, event_date)` via `UserStatesCache.gather_for(...)`.
+    """
+    feature_names = tuple(features)
+    half_lives = tuple(float(h) for h in half_lives)
+    beta = np.log(2.0) / np.asarray(half_lives, dtype=float)
+    n_alpha = len(feature_names) * len(half_lives)
+
+    states_per_user: dict[int, np.ndarray] = {}
+    date_idx_per_user: dict[int, dict[pd.Timestamp, int]] = {}
+
+    for user_id, user_df in full_df.groupby("user_id", sort=False):
+        x_full = user_df.loc[:, list(feature_names)].to_numpy(dtype=float)
+        states_full = (
+            build_basis_states(x_full, beta).reshape(len(user_df), -1).astype(np.float32)
+        )
+        full_dates = user_df["event_date"].to_numpy(dtype="datetime64[ns]")
+        states_per_user[int(user_id)] = states_full
+        date_idx_per_user[int(user_id)] = {
+            pd.Timestamp(d).normalize(): i for i, d in enumerate(full_dates)
+        }
+
+    return UserStatesCache(
+        n_alpha=n_alpha,
+        feature_names=feature_names,
+        half_lives=half_lives,
+        states_per_user=states_per_user,
+        date_idx_per_user=date_idx_per_user,
+    )
 
 
 @dataclass

@@ -40,7 +40,8 @@ from src.diploma_baselines.models import (
     GlobalRollingMeanPoissonModel,
     GlobalRollingSeasonalPoissonModel,
     PersonalizedGammaPoissonScaler,
-    build_basis_states,
+    UserStatesCache,
+    build_user_states_cache,
     fit_pooled_additive_multi_kernel_hawkes,
     predict_pooled_additive_multi_kernel_hawkes,
 )
@@ -145,63 +146,31 @@ def evaluate_hawkes(
     train_end: pd.Timestamp,
     train_personalized_pred: np.ndarray,
     test_personalized_pred: np.ndarray,
+    cache: UserStatesCache,
 ) -> float:
     """Fit pooled scaled-baseline Hawkes on this block's train, predict on its test."""
-    beta = np.log(2.0) / np.asarray(HAWKES_HALF_LIVES, dtype=float)
-
-    full_groups = full_df.groupby("user_id", sort=False)
+    states_train_flat = cache.gather_for(train_df)
+    states_test_flat = cache.gather_for(test_df)
+    y_train_flat = train_df[TARGET_COL].to_numpy(dtype=float)
+    y_test_flat = test_df[TARGET_COL].to_numpy(dtype=float)
+    train_pred_array = np.asarray(train_personalized_pred, dtype=float)
+    test_pred_array = np.asarray(test_personalized_pred, dtype=float)
 
     train_state_blocks: list[np.ndarray] = []
     train_y_blocks: list[np.ndarray] = []
     train_base_blocks: list[np.ndarray] = []
-
     test_state_blocks: list[np.ndarray] = []
     test_y_blocks: list[np.ndarray] = []
     test_base_blocks: list[np.ndarray] = []
 
-    block_start64 = np.datetime64(block_start)
-    train_end64 = np.datetime64(train_end)
-    block_end64 = np.datetime64(block_end)
-
-    train_users = train_df.groupby("user_id", sort=False).indices
-    test_users = test_df.groupby("user_id", sort=False).indices
-
-    train_pred_by_user: dict[int, np.ndarray] = {}
-    test_pred_by_user: dict[int, np.ndarray] = {}
-    train_pred_array = np.asarray(train_personalized_pred, dtype=float)
-    test_pred_array = np.asarray(test_personalized_pred, dtype=float)
-    for uid, idx in train_users.items():
-        train_pred_by_user[int(uid)] = train_pred_array[idx]
-    for uid, idx in test_users.items():
-        test_pred_by_user[int(uid)] = test_pred_array[idx]
-
-    for user_id, full_user in full_groups:
-        x_full = full_user.loc[:, list(HAWKES_FEATURES)].to_numpy(dtype=float)
-        states_full = build_basis_states(x_full, beta).reshape(len(full_user), -1).astype(np.float32)
-        full_dates = full_user["event_date"].to_numpy(dtype="datetime64[ns]")
-
-        train_mask = (full_dates >= block_start64) & (full_dates <= train_end64)
-        test_mask = (full_dates > train_end64) & (full_dates <= block_end64)
-
-        if train_mask.any():
-            states_train = states_full[train_mask]
-            y_train_user = full_user[TARGET_COL].to_numpy(dtype=float)[train_mask]
-            base_train_user = train_pred_by_user.get(int(user_id))
-            if base_train_user is None:
-                continue
-            train_state_blocks.append(states_train)
-            train_y_blocks.append(y_train_user)
-            train_base_blocks.append(base_train_user)
-
-        if test_mask.any():
-            states_test = states_full[test_mask]
-            y_test_user = full_user[TARGET_COL].to_numpy(dtype=float)[test_mask]
-            base_test_user = test_pred_by_user.get(int(user_id))
-            if base_test_user is None:
-                continue
-            test_state_blocks.append(states_test)
-            test_y_blocks.append(y_test_user)
-            test_base_blocks.append(base_test_user)
+    for uid, idx in train_df.groupby("user_id", sort=False).indices.items():
+        train_state_blocks.append(states_train_flat[idx])
+        train_y_blocks.append(y_train_flat[idx])
+        train_base_blocks.append(train_pred_array[idx])
+    for uid, idx in test_df.groupby("user_id", sort=False).indices.items():
+        test_state_blocks.append(states_test_flat[idx])
+        test_y_blocks.append(y_test_flat[idx])
+        test_base_blocks.append(test_pred_array[idx])
 
     hawkes = fit_pooled_additive_multi_kernel_hawkes(
         state_blocks=train_state_blocks,
@@ -279,6 +248,11 @@ def main() -> None:
     blocks = build_blocks(GLOBAL_START, GLOBAL_END, BLOCK_LEN)
     print(f"  built {len(blocks)} blocks")
 
+    print("Building Hawkes states cache once for all blocks...")
+    hawkes_cache = build_user_states_cache(
+        full_df, features=HAWKES_FEATURES, half_lives=HAWKES_HALF_LIVES,
+    )
+
     results: list[dict] = []
 
     for block in blocks:
@@ -327,6 +301,7 @@ def main() -> None:
                 train_end=train_end,
                 train_personalized_pred=train_pers_pred,
                 test_personalized_pred=test_pers_pred,
+                cache=hawkes_cache,
             )
             print(f"  Scaled-baseline Hawkes:   NLL = {nll_hawkes:.4f}  ({time.time() - t0:.1f}s)")
         except Exception as exc:  # pragma: no cover - defensive

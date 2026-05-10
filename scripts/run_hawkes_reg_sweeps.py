@@ -43,7 +43,7 @@ from src.diploma_baselines.models import (
     FEATURE_NAMES,
     GlobalRollingSeasonalPoissonModel,
     PersonalizedGammaPoissonScaler,
-    build_basis_states,
+    build_user_states_cache,
     fit_pooled_additive_multi_kernel_hawkes,
     predict_pooled_additive_multi_kernel_hawkes,
 )
@@ -100,43 +100,24 @@ def prepare_inputs():
     )
     print(f"  personalized baseline test NLL = {baseline_test_nll:.5f}")
 
-    beta = np.log(2.0) / np.asarray(HALF_LIVES, dtype=float)
-
     print("Building Hawkes states once...")
-    train_user_groups = train_df.groupby("user_id", sort=False).indices
-    test_user_groups = test_df.groupby("user_id", sort=False).indices
-
-    train_pred_by_user = {int(uid): train_pers[idx] for uid, idx in train_user_groups.items()}
-    test_pred_by_user = {int(uid): test_pers[idx] for uid, idx in test_user_groups.items()}
-
-    train_start64 = np.datetime64(train_df["event_date"].min())
-    train_end64 = np.datetime64(train_df["event_date"].max())
-    test_start64 = np.datetime64(test_df["event_date"].min())
-    test_end64 = np.datetime64(test_df["event_date"].max())
+    cache = build_user_states_cache(full_df, features=FEATURES, half_lives=HALF_LIVES)
+    states_train_flat = cache.gather_for(train_df)
+    states_test_flat = cache.gather_for(test_df)
+    y_train_flat = train_df[TARGET_COL].to_numpy(dtype=float)
+    y_test_flat = test_df[TARGET_COL].to_numpy(dtype=float)
 
     train_state_blocks = []; train_y_blocks = []; train_base_blocks = []
     test_state_blocks = []; test_y_blocks = []; test_base_blocks = []
 
-    for user_id, full_user in full_df.groupby("user_id", sort=False):
-        x_full = full_user.loc[:, list(FEATURES)].to_numpy(dtype=float)
-        states_full = build_basis_states(x_full, beta).reshape(len(full_user), -1).astype(np.float32)
-        full_dates = full_user["event_date"].to_numpy(dtype="datetime64[ns]")
-
-        train_mask = (full_dates >= train_start64) & (full_dates <= train_end64)
-        test_mask = (full_dates >= test_start64) & (full_dates <= test_end64)
-
-        if train_mask.any():
-            base_t = train_pred_by_user.get(int(user_id))
-            if base_t is not None:
-                train_state_blocks.append(states_full[train_mask])
-                train_y_blocks.append(full_user[TARGET_COL].to_numpy(dtype=float)[train_mask])
-                train_base_blocks.append(base_t)
-        if test_mask.any():
-            base_t = test_pred_by_user.get(int(user_id))
-            if base_t is not None:
-                test_state_blocks.append(states_full[test_mask])
-                test_y_blocks.append(full_user[TARGET_COL].to_numpy(dtype=float)[test_mask])
-                test_base_blocks.append(base_t)
+    for uid, idx in train_df.groupby("user_id", sort=False).indices.items():
+        train_state_blocks.append(states_train_flat[idx])
+        train_y_blocks.append(y_train_flat[idx])
+        train_base_blocks.append(train_pers[idx])
+    for uid, idx in test_df.groupby("user_id", sort=False).indices.items():
+        test_state_blocks.append(states_test_flat[idx])
+        test_y_blocks.append(y_test_flat[idx])
+        test_base_blocks.append(test_pers[idx])
 
     return {
         "train_state_blocks": train_state_blocks,

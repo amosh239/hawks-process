@@ -48,7 +48,7 @@ from src.diploma_baselines.models import (
     FEATURE_NAMES,
     GlobalRollingSeasonalPoissonModel,
     PersonalizedGammaPoissonScaler,
-    build_basis_states,
+    build_user_states_cache,
 )
 from scripts.run_joint_lambda_alpha_fit import fit_joint  # type: ignore
 
@@ -112,34 +112,10 @@ def main():
 
     # Hawkes states
     print("Building Hawkes states...")
-    beta = np.log(2.0) / np.asarray(HALF_LIVES, dtype=float)
-    n_alpha = len(HAWKES_FEATURES) * len(HALF_LIVES)
-
-    train_dates = train_df["event_date"].to_numpy(dtype="datetime64[ns]")
-    test_dates = test_df["event_date"].to_numpy(dtype="datetime64[ns]")
-
-    X_train = np.zeros((len(train_df), n_alpha), dtype=np.float32)
-    X_test = np.zeros((len(test_df), n_alpha), dtype=np.float32)
-
-    train_groups = train_df.groupby("user_id", sort=False).indices
-    test_groups = test_df.groupby("user_id", sort=False).indices
-
-    for user_id, full_user in full_df.groupby("user_id", sort=False):
-        x_full = full_user.loc[:, list(HAWKES_FEATURES)].to_numpy(dtype=float)
-        states_full = build_basis_states(x_full, beta).reshape(len(full_user), -1).astype(np.float32)
-        full_dates = full_user["event_date"].to_numpy(dtype="datetime64[ns]")
-        full_to_idx = {pd.Timestamp(d).normalize(): i for i, d in enumerate(full_dates)}
-
-        if int(user_id) in train_groups:
-            idx = train_groups[int(user_id)]
-            wanted = train_dates[idx]
-            rows_in_full = np.array([full_to_idx[pd.Timestamp(d).normalize()] for d in wanted], dtype=int)
-            X_train[idx] = states_full[rows_in_full]
-        if int(user_id) in test_groups:
-            idx = test_groups[int(user_id)]
-            wanted = test_dates[idx]
-            rows_in_full = np.array([full_to_idx[pd.Timestamp(d).normalize()] for d in wanted], dtype=int)
-            X_test[idx] = states_full[rows_in_full]
+    cache = build_user_states_cache(full_df, features=HAWKES_FEATURES, half_lives=HALF_LIVES)
+    n_alpha = cache.n_alpha
+    X_train = cache.gather_for(train_df)
+    X_test = cache.gather_for(test_df)
 
     # User indexing
     train_uids = train_df["user_id"].to_numpy()
