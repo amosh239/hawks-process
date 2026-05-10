@@ -266,6 +266,64 @@ def build_feature_tables(
     )
 
 
+def build_feature_panel(
+    full_df: pd.DataFrame,
+    analysis_start: pd.Timestamp,
+    analysis_end: pd.Timestamp,
+    target_col: str = "to_ord",
+    source_features: list[str] | tuple[str, ...] | None = None,
+) -> tuple[np.ndarray, pd.DataFrame, list[str]]:
+    """Build a feature row for every (user, day) in [analysis_start, analysis_end].
+
+    Returns (x_panel, index_df, feature_names) where:
+      * x_panel — float32 ndarray of shape (N, n_features),
+      * index_df — DataFrame [user_id, event_date, target] of length N,
+      * feature_names — list of column names matching x_panel columns.
+
+    No train/test split is applied; callers slice index_df by date to
+    construct any train/test windows they need.
+    """
+    source_features = list(source_features or SOURCE_FEATURES)
+    rows: list[list[float]] = []
+    user_ids: list[int] = []
+    event_dates: list[pd.Timestamp] = []
+    targets: list[float] = []
+
+    grouped = full_df.sort_values(["user_id", "event_date"]).groupby("user_id", sort=False)
+    for user_id, user_df in grouped:
+        block = {"dates": user_df["event_date"].to_numpy()}
+        for name in source_features:
+            block[name] = user_df[name].to_numpy(dtype=float)
+        dows = user_df["event_date"].dt.dayofweek.to_numpy(dtype=int)
+        activity_full = _activity_array(block, source_features)
+        target_arr = user_df[target_col].to_numpy(dtype=float)
+
+        dates = user_df["event_date"].to_numpy(dtype="datetime64[ns]")
+        analysis_mask = (dates >= np.datetime64(analysis_start)) & (dates <= np.datetime64(analysis_end))
+        if not analysis_mask.any():
+            continue
+        idxs = np.flatnonzero(analysis_mask)
+        ev = user_df["event_date"].to_numpy()
+        for day_idx in idxs.tolist():
+            feats = build_feature_vector_for_day(
+                block, source_features, activity_full, dows, int(day_idx)
+            )
+            rows.append(feats)
+            user_ids.append(int(user_id))
+            event_dates.append(pd.Timestamp(ev[day_idx]))
+            targets.append(float(target_arr[day_idx]))
+
+    if not rows:
+        raise ValueError("Empty feature panel")
+
+    x_panel = np.asarray(rows, dtype=np.float32)
+    index_df = pd.DataFrame(
+        {"user_id": user_ids, "event_date": event_dates, "target": targets}
+    )
+    feature_names = _build_feature_names(source_features)
+    return x_panel, index_df, feature_names
+
+
 def fit_global_poisson_gbdt(
     feature_table: GBDTFeatureTable,
     seed: int = 42,

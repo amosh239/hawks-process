@@ -28,6 +28,7 @@ MODEL_LABELS = [
     "Scaled-baseline Hawkes",
     "Joint Hawkes (λ_u + α)",
     "Pooled Hawkes (c·b_t + α^T s)",
+    "GBDT (experimental)",
 ]
 
 # Distinct colors per model
@@ -39,6 +40,7 @@ MODEL_COLORS = {
     "Scaled-baseline Hawkes": "#0B3C5D",
     "Joint Hawkes (λ_u + α)": "#7B3FAA",
     "Pooled Hawkes (c·b_t + α^T s)": "#1F8FFF",
+    "GBDT (experimental)": "#D2691E",
 }
 
 
@@ -83,6 +85,7 @@ def main():
         "Scaled-baseline Hawkes": "Scaled H",
         "Joint Hawkes (λ_u + α)": "Joint H",
         "Pooled Hawkes (c·b_t + α^T s)": "Pooled H",
+        "GBDT (experimental)": "GBDT",
     }
 
     for panel_idx, n_days in enumerate(n_grid):

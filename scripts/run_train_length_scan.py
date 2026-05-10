@@ -5,7 +5,9 @@ For each n ∈ N_GRID, sample m random consecutive intervals of n days from
 last n/3 are test. All probabilistic models are fitted on train and evaluated
 on test. Per-run test NLL is persisted to CSV.
 
-Skips GBDT (too slow). All n values are multiples of 3.
+The GBDT model is included as well: feature engineering is performed once
+on the full analysis window, and per-interval cost is reduced to a slice
+plus a HistGradientBoosting fit. All n values are multiples of 3.
 """
 
 from __future__ import annotations
@@ -31,6 +33,7 @@ os.environ.setdefault("MPLBACKEND", "Agg")
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
+from sklearn.ensemble import HistGradientBoostingRegressor
 
 from src.diploma_baselines.data import filter_date_range, load_daily_grid
 from src.diploma_baselines.metrics import evaluate_count_forecast
@@ -45,6 +48,7 @@ from src.diploma_baselines.models import (
     fit_pooled_additive_multi_kernel_hawkes,
     predict_pooled_additive_multi_kernel_hawkes,
 )
+from src.diploma_experimental.gbdt import SOURCE_FEATURES, build_feature_panel
 
 
 TARGET_COL = "to_ord"
@@ -72,6 +76,7 @@ MODEL_LABELS = [
     "Scaled-baseline Hawkes",
     "Joint Hawkes (λ_u + α)",
     "Pooled Hawkes (c·b_t + α^T s)",
+    "GBDT (experimental)",
 ]
 
 
@@ -147,6 +152,9 @@ def evaluate_interval(
     interval_start: pd.Timestamp,
     n_days: int,
     user_states_cache: dict,
+    gbdt_x_full: np.ndarray | None = None,
+    gbdt_dates_full: np.ndarray | None = None,
+    gbdt_targets_full: np.ndarray | None = None,
 ):
     """Fit and evaluate all models on one (start, n_days) interval. Returns dict."""
     train_len = (n_days // 3) * 2
@@ -330,6 +338,38 @@ def evaluate_interval(
         out["Pooled Hawkes (c·b_t + α^T s)_c"] = float("nan")
         out["Pooled Hawkes (c·b_t + α^T s)_m_u_mean"] = float("nan")
 
+    # 8. GBDT (experimental): slice the precomputed feature panel by date,
+    #    fit HistGradientBoosting on the train slice, evaluate on test slice.
+    if gbdt_x_full is not None and gbdt_dates_full is not None and gbdt_targets_full is not None:
+        try:
+            mask_tr = (gbdt_dates_full >= np.datetime64(interval_start)) & (
+                gbdt_dates_full <= np.datetime64(train_end)
+            )
+            mask_te = (gbdt_dates_full >= np.datetime64(test_start)) & (
+                gbdt_dates_full <= np.datetime64(test_end)
+            )
+            x_tr = gbdt_x_full[mask_tr]
+            y_tr = gbdt_targets_full[mask_tr]
+            x_te = gbdt_x_full[mask_te]
+            y_te = gbdt_targets_full[mask_te]
+            model = HistGradientBoostingRegressor(
+                loss="poisson",
+                max_depth=5,
+                learning_rate=0.05,
+                max_iter=200,
+                min_samples_leaf=40,
+                random_state=42,
+            )
+            model.fit(x_tr, y_tr)
+            pred = np.clip(model.predict(x_te), 1e-8, None)
+            out["GBDT (experimental)"] = float(
+                evaluate_count_forecast(y_te, pred)["mean_poisson_nll"]
+            )
+        except Exception:
+            out["GBDT (experimental)"] = float("nan")
+    else:
+        out["GBDT (experimental)"] = float("nan")
+
     return out
 
 
@@ -352,7 +392,7 @@ def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     print("Loading data...")
-    cols = list(dict.fromkeys([TARGET_COL, *HAWKES_FEATURES]))
+    cols = list(dict.fromkeys([TARGET_COL, *HAWKES_FEATURES, *SOURCE_FEATURES]))
     full_df = load_daily_grid(
         "data/processed/orbitals/dayuses_cohort_10000_seed42_daily_grid.csv",
         value_cols=cols,
@@ -360,6 +400,24 @@ def main():
     print(f"  loaded {len(full_df):,} rows")
 
     daily_mean_full = full_df.groupby("event_date")[TARGET_COL].mean().sort_index()
+
+    # Build GBDT feature panel once for the full analysis window — slicing
+    # per-interval is then ~free, and only the GBDT fit itself runs per run.
+    print("Building GBDT feature panel for full analysis window...")
+    t_panel0 = time.time()
+    gbdt_x_full, gbdt_index_full, _ = build_feature_panel(
+        full_df=full_df,
+        analysis_start=GLOBAL_START,
+        analysis_end=GLOBAL_END,
+        target_col=TARGET_COL,
+        source_features=SOURCE_FEATURES,
+    )
+    gbdt_dates_full = gbdt_index_full["event_date"].to_numpy(dtype="datetime64[ns]")
+    gbdt_targets_full = gbdt_index_full["target"].to_numpy(dtype=float)
+    print(
+        f"  built panel: {gbdt_x_full.shape[0]:,} rows × {gbdt_x_full.shape[1]} feats "
+        f"in {time.time() - t_panel0:.1f}s"
+    )
 
     # Build Hawkes states cache once (per-user, exp-decay)
     print("Building Hawkes states cache...")
@@ -394,6 +452,9 @@ def main():
                 interval_start=start,
                 n_days=n_days,
                 user_states_cache=user_states_cache,
+                gbdt_x_full=gbdt_x_full,
+                gbdt_dates_full=gbdt_dates_full,
+                gbdt_targets_full=gbdt_targets_full,
             )
             row["n_days"] = int(n_days)
             row["m_idx"] = int(k)
@@ -404,7 +465,8 @@ def main():
                 f"  [{run_idx:>3}/{total_runs}] n={n_days:>3} k={k:>2} "
                 f"start={row['interval_start']} test_rows={row['test_rows']:>6,} "
                 f"NLL: GP={row['Personalized Gamma-Poisson']:.4f} Joint={row['Joint Hawkes (λ_u + α)']:.4f} "
-                f"Pooled={row['Pooled Hawkes (c·b_t + α^T s)']:.4f}  "
+                f"Pooled={row['Pooled Hawkes (c·b_t + α^T s)']:.4f} "
+                f"GBDT={row['GBDT (experimental)']:.4f}  "
                 f"({elapsed:.1f}s, ETA {eta_total/60:.1f}m)"
             )
             # Save incrementally every few runs

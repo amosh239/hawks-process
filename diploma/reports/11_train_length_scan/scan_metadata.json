@@ -30,11 +30,12 @@
     "Personalized Gamma-Poisson",
     "Scaled-baseline Hawkes",
     "Joint Hawkes (λ_u + α)",
-    "Pooled Hawkes (c·b_t + α^T s)"
+    "Pooled Hawkes (c·b_t + α^T s)",
+    "GBDT (experimental)"
   ],
   "global_start": "2025-01-15",
   "global_end": "2025-10-31",
   "base_seed": 42,
   "total_runs": 216,
-  "elapsed_seconds": 701.662486076355
+  "elapsed_seconds": 1360.9117670059204
 }
