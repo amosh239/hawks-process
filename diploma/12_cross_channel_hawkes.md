@@ -11,81 +11,90 @@
 
 - **Channels**: `searches` (mean ≈ 1.20/row), `to_cart` (≈ 0.37), `to_ord` (≈ 0.10).
 - **Half-life**: `1` день, `n_alpha = 3` source-каналов на target.
-- **Main train/test** (раздел 12.3): `2025-01-15..2025-08-09` (207d, ~1.99M строк) / `2025-08-10..2025-09-30` (52d, ~513K).
+- **Main train/test** (разделы 12.3-12.4): `2025-01-15..2025-08-09` (207d, ~1.99M строк) / `2025-08-10..2025-09-30` (52d, ~513K).
 - **Bootstrap** (разделы 12.4-12.5): 10 случайных `100d` окон из общего диапазона, `66d` train + `34d` test, фиксированный seed.
 - **Hyperparameters**: `α_l2 = 1e-4`, `max_iter = 500`. У Joint Hawkes тестируются два уровня регуляризации: `λ_{ℓ_2} = 1.0` (default) и `λ_{ℓ_2} = 0` (без shrinkage'а на `λ_u`).
 
 Скрипты: [`run_cross_channel_hawkes_ch15.py`](../scripts/compute/run_cross_channel_hawkes_ch15.py) (Scaled main train), [`run_cross_channel_hawkes_bootstrap_ch16.py`](../scripts/compute/run_cross_channel_hawkes_bootstrap_ch16.py) (Scaled bootstrap), [`run_cross_channel_joint_hawkes_bootstrap_ch17.py`](../scripts/compute/run_cross_channel_joint_hawkes_bootstrap_ch17.py) (Joint `λ_{ℓ_2}=1` bootstrap), [`run_cross_channel_joint_unregularized_ch18.py`](../scripts/compute/run_cross_channel_joint_unregularized_ch18.py) (Joint `λ_{ℓ_2}=0` bootstrap).
 
-## 12.3. Матрица `α` на главном train (Scaled-baseline)
+## 12.3. Скоринговая верификация: Hawkes улучшает baseline на всех 3 каналах
 
-![scaled main heatmap](reports/15_cross_channel_hawkes/main_3ch/alpha_heatmap.png)
+До анализа структуры `α` стоит убедиться, что Hawkes-надстройка вообще полезна для каждого из 3 каналов. Для `to_ord` это уже показано в главе 6, но `searches` и `to_cart` — новые target'ы. Сравниваем test NLL Personalized Gamma-Poisson (baseline без Hawkes) и Scaled-baseline Hawkes на главном `207d`-train:
 
-| target ↓ \ source → | `searches` | `to_cart` | `to_ord` |
-| --- | ---: | ---: | ---: |
-| `searches` | `0.1269` | `0.0240` | `0` |
-| `to_cart`  | `0.0103` | `0.0713` | `0` |
-| `to_ord`   | `0.0030` | `0.0046` | `0.0194` |
+![baseline vs hawkes nll](reports/15_cross_channel_hawkes/main_3ch/baseline_vs_hawkes_nll.png)
 
-**Верхне-треугольная часть колонки `to_ord` нулевая** (`α[searches←to_ord] = α[to_cart←to_ord] = 0`): после покупки нет краткосрочного Hawkes-сигнала на поиск или корзину — структурный нуль, подтверждаемый во всех последующих фитах. Self-α `α[to_ord←to_ord] = 0.019` ненулевой, но небольшой, и в bootstrap (12.4) опускается практически к нулю. Off-diagonal funnel-связи `searches → cart → order` различимы и положительны.
+| target | Pers. GP test NLL | Scaled Hawkes test NLL | Δ (Hawkes − GP) | % от baseline |
+| --- | ---: | ---: | ---: | ---: |
+| `searches` | `2.2519` | `2.0980` | **`−0.1539`** | **`−6.83%`** |
+| `to_cart`  | `1.0321` | `0.9860` | **`−0.0461`** | **`−4.47%`** |
+| `to_ord`   | `0.4096` | `0.3976` | **`−0.0119`** | **`−2.92%`** |
 
-Артефакты: [`reports/15_cross_channel_hawkes/`](reports/15_cross_channel_hawkes/).
+Hawkes-надстройка улучшает baseline на **всех трёх каналах**. Относительное улучшение монотонно убывает по каналам воронки: самый сильный эффект на `searches` (`−6.83%` от baseline NLL), скромнее на `to_cart` (`−4.47%`), и наименьший на `to_ord` (`−2.92%`) — что согласуется с тем, что `to_ord` самый разреженный канал (mean ≈ `0.10` событий/строка vs `1.20` у `searches`). Дальше имеет смысл смотреть на структуру `α` — мы знаем, что у всех трёх target'ов Hawkes несёт реальный сигнал.
 
-## 12.4. Bootstrap-стабильность (Scaled-baseline, 10 × 100d)
+## 12.4. Scaled-baseline: точечная оценка на главном train и bootstrap-стабильность
 
-![scaled bootstrap heatmap](reports/16_cross_channel_bootstrap/alpha_heatmap_with_ci.png)
+<table>
+<tr>
+<td align="center"><b>главный train (<code>207d</code>)</b></td>
+<td align="center"><b>bootstrap mean ± std (10 × <code>100d</code>)</b></td>
+</tr>
+<tr>
+<td><img src="reports/15_cross_channel_hawkes/main_3ch/alpha_heatmap.png" width="100%"></td>
+<td><img src="reports/16_cross_channel_bootstrap/alpha_heatmap_with_ci.png" width="100%"></td>
+</tr>
+</table>
 
-Mean ± std по 10 окнам:
+Слева — точечная оценка `α[target ← source]` на главном `207d`-train. Справа — mean ± std bootstrap по 10 случайным `100d`-окнам.
 
-| ячейка | mean `α` | std | CV |
-| --- | ---: | ---: | ---: |
-| `searches ← searches` | `0.0798` | `0.0058` | `7.2%` |
-| `searches ← to_cart`  | `0.0168` | `0.0026` | `15.5%` |
-| `to_cart ← searches`  | `0.0060` | `0.0009` | `15.6%` |
-| `to_cart ← to_cart`   | `0.0347` | `0.0034` | `9.7%` |
-| `to_ord ← searches`   | `0.0011` | `0.0005` | `47.4%` |
-| `to_ord ← to_cart`    | `0.0025` | `0.0009` | `36.2%` |
-| **`to_ord ← to_ord`** | **`0.0016`** | **`0.0024`** | **`148.3%`** |
+| ячейка | главный train | bootstrap mean | std | CV |
+| --- | ---: | ---: | ---: | ---: |
+| `searches ← searches` | `0.1269` | `0.0798` | `0.0058` | `7.2%` |
+| `searches ← to_cart`  | `0.0240` | `0.0168` | `0.0026` | `15.5%` |
+| `to_cart ← searches`  | `0.0103` | `0.0060` | `0.0009` | `15.6%` |
+| `to_cart ← to_cart`   | `0.0713` | `0.0347` | `0.0034` | `9.7%` |
+| `to_ord ← searches`   | `0.0030` | `0.0011` | `0.0005` | `47.4%` |
+| `to_ord ← to_cart`    | `0.0046` | `0.0025` | `0.0009` | `36.2%` |
+| **`to_ord ← to_ord`** | **`0.0194`** | **`0.0016`** | **`0.0024`** | **`148.3%`** |
 
-**Off-diagonal funnel-связи стабильны** (`CV ≤ 16%` для частых пар, до `47%` для редкого `to_ord ← searches`). **`α[to_ord ← to_ord]` коллапсирует**: median ≈ 0, в части окон значение зажимается к нулю (EB-prior зажимает per-user multiplier к нулю для редко-активных юзеров → у оптимизатора нет signal для self-α редкого target'а). Это и мотивирует переход к Joint Hawkes в 12.5.
+Структура воронки видна сразу:
 
-Артефакты: [`reports/16_cross_channel_bootstrap/`](reports/16_cross_channel_bootstrap/).
+- **Верхне-треугольная часть колонки `to_ord` идентически нулевая** на главном train (`α[searches ← to_ord] = α[to_cart ← to_ord] = 0`): после покупки нет краткосрочного Hawkes-сигнала на поиск или корзину. Структурный нуль, подтверждаемый во всех последующих фитах.
+- **Off-diagonal funnel-связи `searches → cart → order`** различимы и положительны на главном train и стабильны в bootstrap (`CV ≤ 16%` для частых пар, до `47%` для редкого `to_ord ← searches`).
+- **`α[to_ord ← to_ord]`** на главном train = `0.0194` (ненулевой, но небольшой), а в bootstrap **коллапсирует** практически в ноль (mean `0.0016`, CV `148%`). Это следствие EB-prior'а: per-user multiplier шринкается к нулю для редко-активных юзеров, и у оптимизатора нет signal для self-α редкого target'а на коротких окнах.
+
+Этот коллапс self-`to_ord` и мотивирует переход к Joint Hawkes в 12.5.
+
+Артефакты: [`reports/15_cross_channel_hawkes/`](reports/15_cross_channel_hawkes/), [`reports/16_cross_channel_bootstrap/`](reports/16_cross_channel_bootstrap/).
 
 ## 12.5. Параметры Joint Hawkes на bootstrap (10 × 100d)
 
 В Joint Hawkes отказ от EB-prior'а: per-user multiplier `λ_u` обучается напрямую, с L2-штрафом `λ_{ℓ_2} · (λ_u - 1)²` к единице. При `λ_{ℓ_2} = 1` штраф активный (зажимает `λ_u` к prior'у), при `λ_{ℓ_2} = 0` штрафа нет вообще — `λ_u` свободно.
 
-### 12.5.1. `λ_{ℓ_2} = 1` (default режим)
+<table>
+<tr>
+<td align="center"><b><code>λ_{ℓ_2} = 1</code> (default режим)</b></td>
+<td align="center"><b><code>λ_{ℓ_2} = 0</code> (без регуляризации)</b></td>
+</tr>
+<tr>
+<td><img src="reports/17_cross_channel_joint_bootstrap/alpha_heatmap_with_ci.png" width="100%"></td>
+<td><img src="reports/18_joint_unregularized/alpha_heatmap_with_ci.png" width="100%"></td>
+</tr>
+</table>
 
-![joint l2=1 heatmap](reports/17_cross_channel_joint_bootstrap/alpha_heatmap_with_ci.png)
+Mean ± std по 10 окнам для обоих режимов:
 
-| ячейка | mean `α` | std | CV |
-| --- | ---: | ---: | ---: |
-| `searches ← searches` | `0.1020` | `0.0042` | `4.1%` |
-| `searches ← to_cart`  | `0.0196` | `0.0017` | `8.7%` |
-| `to_cart ← searches`  | `0.0119` | `0.0007` | `5.9%` |
-| `to_cart ← to_cart`   | `0.0651` | `0.0033` | `5.1%` |
-| `to_ord ← searches`   | `0.0039` | `0.0008` | `21.3%` |
-| `to_ord ← to_cart`    | `0.0051` | `0.0010` | `20.0%` |
-| **`to_ord ← to_ord`** | **`0.0383`** | **`0.0057`** | **`14.7%`** |
+| ячейка | mean `α` (`λ=1`) | std (`λ=1`) | CV (`λ=1`) | mean `α` (`λ=0`) | std (`λ=0`) | CV (`λ=0`) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `searches ← searches` | `0.1020` | `0.0042` | `4.1%`  | `0.0843` | `0.0068` | `8.0%`  |
+| `searches ← to_cart`  | `0.0196` | `0.0017` | `8.7%`  | `0.0221` | `0.0029` | `13.0%` |
+| `to_cart ← searches`  | `0.0119` | `0.0007` | `5.9%`  | `0.0122` | `0.0013` | `10.3%` |
+| `to_cart ← to_cart`   | `0.0651` | `0.0033` | `5.1%`  | `0.0414` | `0.0057` | `13.8%` |
+| `to_ord ← searches`   | `0.0039` | `0.0008` | `21.3%` | `0.0035` | `0.0008` | `23.0%` |
+| `to_ord ← to_cart`    | `0.0051` | `0.0010` | `20.0%` | `0.0040` | `0.0011` | `26.7%` |
+| **`to_ord ← to_ord`** | **`0.0383`** | **`0.0057`** | **`14.7%`** | **`0.0002`** | **`0.0006`** | **`316%`** |
 
-Активный L2-prior `(λ_u - 1)²` **стабилизирует все 9 коэффициентов**, включая `α[to_ord ← to_ord]`: CV `14.7%` против `148%` у Scaled.
-
-### 12.5.2. `λ_{ℓ_2} = 0` (без регуляризации)
-
-![joint l2=0 heatmap](reports/18_joint_unregularized/alpha_heatmap_with_ci.png)
-
-| ячейка | mean `α` | std | CV |
-| --- | ---: | ---: | ---: |
-| `searches ← searches` | `0.0843` | `0.0068` | `8.0%` |
-| `searches ← to_cart`  | `0.0221` | `0.0029` | `13.0%` |
-| `to_cart ← searches`  | `0.0122` | `0.0013` | `10.3%` |
-| `to_cart ← to_cart`   | `0.0414` | `0.0057` | `13.8%` |
-| `to_ord ← searches`   | `0.0035` | `0.0008` | `23.0%` |
-| `to_ord ← to_cart`    | `0.0040` | `0.0011` | `26.7%` |
-| **`to_ord ← to_ord`** | **`0.0002`** | **`0.0006`** | **`316%`** |
-
-Когда `λ_u` отпущен, **`α[to_ord ← to_ord]` опять коллапсирует** — теперь до `0.0002` (mean) с CV `316%`. Это та же самая картина что у Scaled (12.4): без активной регуляризации на `λ_u`, оптимизатор для редкого target'а зажимает self-α к нулю и компенсирует это другими параметрами. Off-diagonal funnel-связи при этом остаются устойчивыми.
+- **`λ_{ℓ_2} = 1`** (активный prior `(λ_u - 1)²`): **стабилизирует все 9 коэффициентов**, включая `α[to_ord ← to_ord]` — CV `14.7%` против `148%` у Scaled.
+- **`λ_{ℓ_2} = 0`** (`λ_u` отпущен): **`α[to_ord ← to_ord]` опять коллапсирует** до `0.0002` (mean), CV `316%`. Это та же картина что у Scaled (12.4): без регуляризации на `λ_u`, оптимизатор для редкого target'а зажимает self-α к нулю и компенсирует это другими параметрами. Off-diagonal funnel-связи остаются устойчивыми.
 
 Артефакты: [`reports/17_cross_channel_joint_bootstrap/`](reports/17_cross_channel_joint_bootstrap/), [`reports/18_joint_unregularized/`](reports/18_joint_unregularized/).
 

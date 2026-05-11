@@ -117,6 +117,9 @@ def main() -> None:
         n = int(get_nested(summary, entry["rows_key"]))
         ll_sat = ll + n * deviance / 2.0
         saturated_estimates.append(ll_sat)
+        metrics_parent = get_nested(summary, entry["metric_key"][:-1])
+        mae = float(metrics_parent["mae"])
+        rmse = float(metrics_parent["rmse"])
         rows.append(
             {
                 "label": entry["label"],
@@ -125,6 +128,8 @@ def main() -> None:
                 "test_mean_poisson_nll": -ll / n,
                 "test_n": n,
                 "test_mean_deviance": deviance,
+                "test_mae": mae,
+                "test_rmse": rmse,
             }
         )
 
@@ -309,6 +314,62 @@ def main() -> None:
     fig.savefig(output_dir / "test_nll_per_obs_ladder.png", dpi=150)
     plt.close(fig)
 
+    # Third chart: MAE and RMSE side-by-side (1x2 panel)
+    mae_values = [r["test_mae"] for r in rows]
+    rmse_values = [r["test_rmse"] for r in rows]
+    fig, (ax_mae, ax_rmse) = plt.subplots(1, 2, figsize=(11.6, 4.6))
+
+    for ax, vals, ylabel, title in [
+        (ax_mae, mae_values, "Test MAE (lower is better)", "MAE на тесте"),
+        (ax_rmse, rmse_values, "Test RMSE (lower is better)", "RMSE на тесте"),
+    ]:
+        v_min = min(vals)
+        v_max = max(vals)
+        v_span = v_max - v_min if v_max > v_min else max(v_max, 1e-6) * 0.1
+        b_bottom = v_min - 0.20 * v_span
+        b_top = v_max + 0.15 * v_span
+        bars = ax.bar(
+            x,
+            [val - b_bottom for val in vals],
+            bottom=b_bottom,
+            color=bar_colors,
+            edgecolor="white",
+            width=0.62,
+        )
+        for rect, val in zip(bars, vals):
+            ax.text(
+                rect.get_x() + rect.get_width() / 2.0,
+                val,
+                f"{val:.4f}",
+                ha="center",
+                va="bottom",
+                fontsize=8,
+                color="#0B3C5D",
+                fontweight="bold",
+            )
+        ladder_vals = [v for v, r in zip(vals, rows) if r["kind"] == "ladder"]
+        ax.plot(
+            ladder_x,
+            ladder_vals,
+            color="#0B3C5D",
+            linewidth=1.4,
+            marker="o",
+            markersize=5,
+            zorder=3,
+        )
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, fontsize=8, rotation=20, ha="right")
+        ax.set_ylim(b_bottom, b_top)
+        ax.set_ylabel(ylabel, fontsize=9)
+        ax.set_title(title, fontsize=11)
+        ax.grid(axis="y", linestyle=":", alpha=0.5)
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+
+    fig.tight_layout()
+    fig.savefig(output_dir / "test_mae_rmse_ladder.png", dpi=150)
+    plt.close(fig)
+
     summary_out = {
         "test_n": n_test,
         "saturated_poisson_ceiling": saturated_ll,
@@ -323,6 +384,8 @@ def main() -> None:
                 "kind": rows[i]["kind"],
                 "test_poisson_loglik": rows[i]["test_poisson_loglik"],
                 "test_mean_poisson_nll": rows[i]["test_mean_poisson_nll"],
+                "test_mae": rows[i]["test_mae"],
+                "test_rmse": rows[i]["test_rmse"],
                 "delta_vs_prev_ladder": deltas[i],
                 "gap_to_saturated_ceiling": saturated_ll - rows[i]["test_poisson_loglik"],
                 "share_of_ceiling_gap_closed_vs_step1": (

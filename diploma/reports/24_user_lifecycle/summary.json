@@ -1,0 +1,74 @@
+{
+  "panel_path": "data/processed/orbitals/dayuses_cohort_10000_seed42_daily_grid.csv",
+  "target_col": "to_ord",
+  "analysis_window": [
+    "2025-01-15",
+    "2025-09-30"
+  ],
+  "split_date": "2025-08-09",
+  "n_users_train": 9966,
+  "n_rows_train": 1987113,
+  "n_rows_test": 513118,
+  "joint_hawkes_fit": {
+    "lambda_l2": 1.0,
+    "alpha_l2": 0.0001,
+    "alpha": [
+      0.003796669114258172,
+      0.0006252208347262742,
+      0.0,
+      0.0019875908384012347,
+      0.0,
+      0.0,
+      0.0009701993367846916,
+      0.002365265085661233,
+      0.0,
+      0.03043655709281656
+    ],
+    "alpha_norm": 0.030849244531091224,
+    "lam_u_mean": 0.6459539831736524,
+    "converged": false,
+    "n_iter": 600
+  },
+  "personalized_gp_fit": {
+    "alpha": 0.8773909264835629,
+    "beta": 0.8807990670029789
+  },
+  "picked_users": [
+    {
+      "user_id": 612605,
+      "kind": "активный",
+      "total_y_train": 321,
+      "total_y_test": 93,
+      "ll_pers_gp_test": -117.42909193591632,
+      "ll_joint_hawkes_test": -134.9500900205109,
+      "delta_ll": -17.520998084594595
+    },
+    {
+      "user_id": 238812,
+      "kind": "малоактивный",
+      "total_y_train": 6,
+      "total_y_test": 2,
+      "ll_pers_gp_test": -8.498937724573898,
+      "ll_joint_hawkes_test": -8.551473787164884,
+      "delta_ll": -0.05253606259098653
+    },
+    {
+      "user_id": 676128,
+      "kind": "Joint Hawkes выигрывает",
+      "total_y_train": 7,
+      "total_y_test": 97,
+      "ll_pers_gp_test": -436.2247758220137,
+      "ll_joint_hawkes_test": -284.526647817998,
+      "delta_ll": 151.6981280040157
+    },
+    {
+      "user_id": 47946,
+      "kind": "Joint Hawkes проигрывает",
+      "total_y_train": 899,
+      "total_y_test": 359,
+      "ll_pers_gp_test": -407.2977620630734,
+      "ll_joint_hawkes_test": -542.046835681394,
+      "delta_ll": -134.7490736183206
+    }
+  ]
+}

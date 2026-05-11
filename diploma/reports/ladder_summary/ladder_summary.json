@@ -38,6 +38,8 @@
       "kind": "ladder",
       "test_poisson_loglik": -236458.00167515577,
       "test_mean_poisson_nll": 0.460825778232601,
+      "test_mae": 0.21685495375403577,
+      "test_rmse": 0.6549557500991092,
       "delta_vs_prev_ladder": null,
       "gap_to_saturated_ceiling": 192242.12780052127,
       "share_of_ceiling_gap_closed_vs_step1": null
@@ -47,6 +49,8 @@
       "kind": "ladder",
       "test_poisson_loglik": -234805.0494186452,
       "test_mean_poisson_nll": 0.45760439005968456,
+      "test_mae": 0.23877977558743885,
+      "test_rmse": 0.6544087561692975,
       "delta_vs_prev_ladder": 1652.952256510558,
       "gap_to_saturated_ceiling": 190589.1755440107,
       "share_of_ceiling_gap_closed_vs_step1": 0.008598283193295347
@@ -56,6 +60,8 @@
       "kind": "ladder",
       "test_poisson_loglik": -234781.60763739632,
       "test_mean_poisson_nll": 0.4575587050881012,
+      "test_mae": 0.23893973591475592,
+      "test_rmse": 0.6543999304329835,
       "delta_vs_prev_ladder": 23.441781248897314,
       "gap_to_saturated_ceiling": 190565.7337627618,
       "share_of_ceiling_gap_closed_vs_step1": 0.008720222029059907
@@ -65,6 +71,8 @@
       "kind": "ladder",
       "test_poisson_loglik": -210167.01250743365,
       "test_mean_poisson_nll": 0.40958807234872613,
+      "test_mae": 0.21870018965722307,
+      "test_rmse": 0.6314030597866475,
       "delta_vs_prev_ladder": 24614.59512996266,
       "gap_to_saturated_ceiling": 165951.13863279915,
       "share_of_ceiling_gap_closed_vs_step1": 0.13675976992411767
@@ -74,6 +82,8 @@
       "kind": "ladder",
       "test_poisson_loglik": -203093.05900769314,
       "test_mean_poisson_nll": 0.39580186040578025,
+      "test_mae": 0.21691388387551605,
+      "test_rmse": 0.6271883009634697,
       "delta_vs_prev_ladder": 7073.9534997405135,
       "gap_to_saturated_ceiling": 158877.18513305864,
       "share_of_ceiling_gap_closed_vs_step1": 0.17355687355938723
@@ -83,6 +93,8 @@
       "kind": "ladder",
       "test_poisson_loglik": -202721.11550823448,
       "test_mean_poisson_nll": 0.39507699107853256,
+      "test_mae": 0.21562480633454273,
+      "test_rmse": 0.6290989303321314,
       "delta_vs_prev_ladder": 371.9434994586627,
       "gap_to_saturated_ceiling": 158505.24163359997,
       "share_of_ceiling_gap_closed_vs_step1": 0.1754916393868057
@@ -92,6 +104,8 @@
       "kind": "experimental",
       "test_poisson_loglik": -199154.34408212538,
       "test_mean_poisson_nll": 0.38812581917244254,
+      "test_mae": 0.21340172261510212,
+      "test_rmse": 0.6297361091392265,
       "delta_vs_prev_ladder": null,
       "gap_to_saturated_ceiling": 154938.47020749084,
       "share_of_ceiling_gap_closed_vs_step1": 0.19404517636081453
