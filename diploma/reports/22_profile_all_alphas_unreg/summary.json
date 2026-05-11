@@ -1,0 +1,2140 @@
+{
+  "channels": [
+    "searches",
+    "to_cart",
+    "to_ord"
+  ],
+  "lambda_l2": 0.0,
+  "alpha_l2": 0.0,
+  "grid_size": 11,
+  "grid_min_upper": 0.1,
+  "grid_upper_mult": 2.0,
+  "cold_max_iter": 6000,
+  "warm_max_iter": 2000,
+  "n_polish_passes": 2,
+  "train_window": [
+    "2025-01-15",
+    "2025-08-09"
+  ],
+  "test_window": [
+    "2025-08-10",
+    "2025-09-30"
+  ],
+  "n_users": 9966,
+  "anchors": [
+    {
+      "target": "searches",
+      "alpha": [
+        0.13068969061496294,
+        0.0279195445951976,
+        0.0
+      ],
+      "lam_u_mean": 0.720213252625895,
+      "converged": true,
+      "n_iter": 1784
+    },
+    {
+      "target": "to_cart",
+      "alpha": [
+        0.016102908358572865,
+        0.07164429210292993,
+        0.0
+      ],
+      "lam_u_mean": 0.7390156481737398,
+      "converged": true,
+      "n_iter": 1597
+    },
+    {
+      "target": "to_ord",
+      "alpha": [
+        0.00534843770241596,
+        0.00539009875020842,
+        0.02018050256840689
+      ],
+      "lam_u_mean": 0.7763804512633653,
+      "converged": true,
+      "n_iter": 971
+    }
+  ],
+  "sweeps": [
+    {
+      "target_idx": 0,
+      "source_idx": 0,
+      "target": "searches",
+      "source": "searches",
+      "pin_grid": [
+        0.0,
+        0.026138,
+        0.052276,
+        0.078414,
+        0.104552,
+        0.13069,
+        0.156828,
+        0.182966,
+        0.209104,
+        0.235241,
+        0.261379
+      ],
+      "anchor_pin_val": 0.13068969061496294,
+      "rows": [
+        {
+          "pin_value": 0.0,
+          "alpha_full": [
+            0.0,
+            0.18918404563534097,
+            0.0
+          ],
+          "lam_u_mean": 0.8804653783398448,
+          "train_loss": 819088.9359359895,
+          "train_nll_mean": 1.8895081226683472,
+          "test_nll_mean": 2.1836448135116795,
+          "mean_baseline_train": 1.0626498491945087,
+          "mean_hawkes_train": 0.1415019887553217,
+          "mean_baseline_test": 1.1975525891108314,
+          "mean_hawkes_test": 0.1680748478777954,
+          "converged": true,
+          "n_iter": 575,
+          "fit_time_s": 32.96686100959778
+        },
+        {
+          "pin_value": 0.026138,
+          "alpha_full": [
+            0.026138,
+            0.15075746774498916,
+            0.0
+          ],
+          "lam_u_mean": 0.8435297503690811,
+          "train_loss": 794104.9903045327,
+          "train_nll_mean": 1.8769351358118087,
+          "test_nll_mean": 2.1545306775932063,
+          "mean_baseline_train": 1.017992909685358,
+          "mean_hawkes_train": 0.17562110662491057,
+          "mean_baseline_test": 1.147546574650482,
+          "mean_hawkes_test": 0.20504333650907144,
+          "converged": true,
+          "n_iter": 543,
+          "fit_time_s": 30.564650297164917
+        },
+        {
+          "pin_value": 0.052276,
+          "alpha_full": [
+            0.052276,
+            0.11574667921748168,
+            0.0
+          ],
+          "lam_u_mean": 0.8098482413610777,
+          "train_loss": 776399.6761949114,
+          "train_nll_mean": 1.8680250667268494,
+          "test_nll_mean": 2.1336463963113057,
+          "mean_baseline_train": 0.9772520674313113,
+          "mean_hawkes_train": 0.2122950963199143,
+          "mean_baseline_test": 1.1019299360366692,
+          "mean_hawkes_test": 0.2450464799687428,
+          "converged": true,
+          "n_iter": 513,
+          "fit_time_s": 29.422423124313354
+        },
+        {
+          "pin_value": 0.078414,
+          "alpha_full": [
+            0.078414,
+            0.08371035676256701,
+            0.0
+          ],
+          "lam_u_mean": 0.7783018110106537,
+          "train_loss": 764609.7907175219,
+          "train_nll_mean": 1.8620918935870279,
+          "test_nll_mean": 2.117672543834656,
+          "mean_baseline_train": 0.9391196411746338,
+          "mean_hawkes_train": 0.25119386592880366,
+          "mean_baseline_test": 1.0591897917764501,
+          "mean_hawkes_test": 0.28769219791713374,
+          "converged": true,
+          "n_iter": 435,
+          "fit_time_s": 25.038225889205933
+        },
+        {
+          "pin_value": 0.104552,
+          "alpha_full": [
+            0.104552,
+            0.0543664600542989,
+            0.0
+          ],
+          "lam_u_mean": 0.748769751152634,
+          "train_loss": 757918.7016770899,
+          "train_nll_mean": 1.8587246522472394,
+          "test_nll_mean": 2.105627634704046,
+          "mean_baseline_train": 0.9033274469037377,
+          "mean_hawkes_train": 0.2921064607334015,
+          "mean_baseline_test": 1.0191681734669849,
+          "mean_hawkes_test": 0.3327299201504005,
+          "converged": true,
+          "n_iter": 608,
+          "fit_time_s": 35.45006489753723
+        },
+        {
+          "pin_value": 0.13069,
+          "alpha_full": [
+            0.13069,
+            0.02787112121119093,
+            0.0
+          ],
+          "lam_u_mean": 0.7203177548071773,
+          "train_loss": 755784.7247953608,
+          "train_nll_mean": 1.8576507440790933,
+          "test_nll_mean": 2.096783278980403,
+          "mean_baseline_train": 0.8689724260747016,
+          "mean_hawkes_train": 0.33514966122227424,
+          "mean_baseline_test": 0.980604137793336,
+          "mean_hawkes_test": 0.3802983575306555,
+          "converged": true,
+          "n_iter": 35,
+          "fit_time_s": 1.7384748458862305
+        },
+        {
+          "pin_value": 0.156828,
+          "alpha_full": [
+            0.156828,
+            0.004912720742099417,
+            0.0
+          ],
+          "lam_u_mean": 0.6928281200069606,
+          "train_loss": 757822.8622164978,
+          "train_nll_mean": 1.8586764217436937,
+          "test_nll_mean": 2.09106491810624,
+          "mean_baseline_train": 0.8354349640893152,
+          "mean_hawkes_train": 0.38083834808050515,
+          "mean_baseline_test": 0.9433222690658299,
+          "mean_hawkes_test": 0.43100908091695045,
+          "converged": true,
+          "n_iter": 511,
+          "fit_time_s": 30.109826803207397
+        },
+        {
+          "pin_value": 0.182966,
+          "alpha_full": [
+            0.182966,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.6592978925853676,
+          "train_loss": 764114.4203289491,
+          "train_nll_mean": 1.8618426020829348,
+          "test_nll_mean": 2.086659573814449,
+          "mean_baseline_train": 0.7946421189459567,
+          "mean_hawkes_train": 0.4400244710530527,
+          "mean_baseline_test": 0.8978201467701031,
+          "mean_hawkes_test": 0.4977519430852434,
+          "converged": true,
+          "n_iter": 263,
+          "fit_time_s": 14.306659936904907
+        },
+        {
+          "pin_value": 0.209104,
+          "alpha_full": [
+            0.209104,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.6258594911460307,
+          "train_loss": 775037.5048745716,
+          "train_nll_mean": 1.8673395640300523,
+          "test_nll_mean": 2.0852872219955554,
+          "mean_baseline_train": 0.7539945588595431,
+          "mean_hawkes_train": 0.5028851097749174,
+          "mean_baseline_test": 0.8524340195095181,
+          "mean_hawkes_test": 0.5688593635259924,
+          "converged": true,
+          "n_iter": 230,
+          "fit_time_s": 12.082777738571167
+        },
+        {
+          "pin_value": 0.235241,
+          "alpha_full": [
+            0.235241,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.5946842622972729,
+          "train_loss": 790196.129451718,
+          "train_nll_mean": 1.8749680303413023,
+          "test_nll_mean": 2.0870939728284075,
+          "mean_baseline_train": 0.71610465794001,
+          "mean_hawkes_train": 0.5657433435446542,
+          "mean_baseline_test": 0.8101157460464681,
+          "mean_hawkes_test": 0.6399640635053275,
+          "converged": true,
+          "n_iter": 193,
+          "fit_time_s": 10.081880807876587
+        },
+        {
+          "pin_value": 0.261379,
+          "alpha_full": [
+            0.261379,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.5654344832761351,
+          "train_loss": 809233.6128120429,
+          "train_nll_mean": 1.8845485038022103,
+          "test_nll_mean": 2.091756903295638,
+          "mean_baseline_train": 0.6805722963538033,
+          "mean_hawkes_train": 0.6286039822665188,
+          "mean_baseline_test": 0.7704067306254987,
+          "mean_hawkes_test": 0.7110714839460764,
+          "converged": true,
+          "n_iter": 225,
+          "fit_time_s": 12.501803874969482
+        }
+      ]
+    },
+    {
+      "target_idx": 0,
+      "source_idx": 1,
+      "target": "searches",
+      "source": "to_cart",
+      "pin_grid": [
+        0.0,
+        0.01,
+        0.02,
+        0.03,
+        0.04,
+        0.05,
+        0.06,
+        0.07,
+        0.08,
+        0.09,
+        0.1
+      ],
+      "anchor_pin_val": 0.0279195445951976,
+      "rows": [
+        {
+          "pin_value": 0.0,
+          "alpha_full": [
+            0.13851795734142253,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.7221827874587041,
+          "train_loss": 756534.8945075463,
+          "train_nll_mean": 1.8580282614684842,
+          "test_nll_mean": 2.0974182506588317,
+          "mean_baseline_train": 0.8712072775546882,
+          "mean_hawkes_train": 0.33312905627553085,
+          "mean_baseline_test": 0.9831550404956023,
+          "mean_hawkes_test": 0.37683275810200756,
+          "converged": true,
+          "n_iter": 144,
+          "fit_time_s": 8.899196863174438
+        },
+        {
+          "pin_value": 0.01,
+          "alpha_full": [
+            0.13561254392137395,
+            0.01,
+            0.0
+          ],
+          "lam_u_mean": 0.7216256364982943,
+          "train_loss": 756081.0007344147,
+          "train_nll_mean": 1.8577998427660092,
+          "test_nll_mean": 2.097130258324593,
+          "mean_baseline_train": 0.8705419015863372,
+          "mean_hawkes_train": 0.33362127027284305,
+          "mean_baseline_test": 0.9823913879728773,
+          "mean_hawkes_test": 0.37781289078368546,
+          "converged": true,
+          "n_iter": 154,
+          "fit_time_s": 9.175772190093994
+        },
+        {
+          "pin_value": 0.02,
+          "alpha_full": [
+            0.13277845639778743,
+            0.02,
+            0.0
+          ],
+          "lam_u_mean": 0.7210790300289145,
+          "train_loss": 755841.0829001187,
+          "train_nll_mean": 1.8576791058807411,
+          "test_nll_mean": 2.09690062787921,
+          "mean_baseline_train": 0.8698978392156482,
+          "mean_hawkes_train": 0.3342850196366337,
+          "mean_baseline_test": 0.9816409731171831,
+          "mean_hawkes_test": 0.3789870628145118,
+          "converged": true,
+          "n_iter": 185,
+          "fit_time_s": 10.948498249053955
+        },
+        {
+          "pin_value": 0.03,
+          "alpha_full": [
+            0.13018074364654003,
+            0.03,
+            0.0
+          ],
+          "lam_u_mean": 0.7199718886121375,
+          "train_loss": 755788.8505104006,
+          "train_nll_mean": 1.8576528203148381,
+          "test_nll_mean": 2.0967241520556676,
+          "mean_baseline_train": 0.8685552128065802,
+          "mean_hawkes_train": 0.3355172390121687,
+          "mean_baseline_test": 0.9801349685524728,
+          "mean_hawkes_test": 0.3808042832927443,
+          "converged": true,
+          "n_iter": 35,
+          "fit_time_s": 1.80985426902771
+        },
+        {
+          "pin_value": 0.04,
+          "alpha_full": [
+            0.12753912603987927,
+            0.04,
+            0.0
+          ],
+          "lam_u_mean": 0.7193001735089389,
+          "train_loss": 755909.8873128729,
+          "train_nll_mean": 1.8577137311953327,
+          "test_nll_mean": 2.096734216613633,
+          "mean_baseline_train": 0.8677278901377231,
+          "mean_hawkes_train": 0.3366438693122475,
+          "mean_baseline_test": 0.9792133529165363,
+          "mean_hawkes_test": 0.3825020623059348,
+          "converged": true,
+          "n_iter": 166,
+          "fit_time_s": 9.946532964706421
+        },
+        {
+          "pin_value": 0.05,
+          "alpha_full": [
+            0.12485207194518694,
+            0.05,
+            0.0
+          ],
+          "lam_u_mean": 0.7189854347066138,
+          "train_loss": 756190.1956597497,
+          "train_nll_mean": 1.8578547943089434,
+          "test_nll_mean": 2.0968833320583196,
+          "mean_baseline_train": 0.8673277859512087,
+          "mean_hawkes_train": 0.33766122703374557,
+          "mean_baseline_test": 0.9787722724429645,
+          "mean_hawkes_test": 0.3840762331066449,
+          "converged": true,
+          "n_iter": 134,
+          "fit_time_s": 8.654677867889404
+        },
+        {
+          "pin_value": 0.06,
+          "alpha_full": [
+            0.12226058448601161,
+            0.06,
+            0.0
+          ],
+          "lam_u_mean": 0.718484968146791,
+          "train_loss": 756622.442427678,
+          "train_nll_mean": 1.8580723193152862,
+          "test_nll_mean": 2.0971161629196913,
+          "mean_baseline_train": 0.8666933660754026,
+          "mean_hawkes_train": 0.3389084179386967,
+          "mean_baseline_test": 0.9780792454876811,
+          "mean_hawkes_test": 0.3859103892517508,
+          "converged": true,
+          "n_iter": 205,
+          "fit_time_s": 12.504510879516602
+        },
+        {
+          "pin_value": 0.07,
+          "alpha_full": [
+            0.11980773601904492,
+            0.07,
+            0.0
+          ],
+          "lam_u_mean": 0.7177439181353986,
+          "train_loss": 757200.9720527572,
+          "train_nll_mean": 1.85836346009343,
+          "test_nll_mean": 2.0973399635951653,
+          "mean_baseline_train": 0.8657801582251038,
+          "mean_hawkes_train": 0.34048902898298494,
+          "mean_baseline_test": 0.9770660887433602,
+          "mean_hawkes_test": 0.38812170742564467,
+          "converged": true,
+          "n_iter": 118,
+          "fit_time_s": 7.322664976119995
+        },
+        {
+          "pin_value": 0.08,
+          "alpha_full": [
+            0.11733126078991016,
+            0.08,
+            0.0
+          ],
+          "lam_u_mean": 0.7172498959400372,
+          "train_loss": 757914.7827237826,
+          "train_nll_mean": 1.8587226800628152,
+          "test_nll_mean": 2.097736439824433,
+          "mean_baseline_train": 0.8651609302447328,
+          "mean_hawkes_train": 0.34201281879531903,
+          "mean_baseline_test": 0.9763807011439072,
+          "mean_hawkes_test": 0.39026874990472116,
+          "converged": true,
+          "n_iter": 204,
+          "fit_time_s": 12.402611017227173
+        },
+        {
+          "pin_value": 0.09,
+          "alpha_full": [
+            0.11524286909852594,
+            0.09,
+            0.0
+          ],
+          "lam_u_mean": 0.715544215486464,
+          "train_loss": 758766.380277482,
+          "train_nll_mean": 1.8591512402673427,
+          "test_nll_mean": 2.097975004109073,
+          "mean_baseline_train": 0.8630656473898565,
+          "mean_hawkes_train": 0.3444699309376111,
+          "mean_baseline_test": 0.9740588410170504,
+          "mean_hawkes_test": 0.3934715586736805,
+          "converged": true,
+          "n_iter": 24,
+          "fit_time_s": 1.7432756423950195
+        },
+        {
+          "pin_value": 0.1,
+          "alpha_full": [
+            0.11255778776919932,
+            0.1,
+            0.0
+          ],
+          "lam_u_mean": 0.7161578662021689,
+          "train_loss": 759735.8235809355,
+          "train_nll_mean": 1.859639105478558,
+          "test_nll_mean": 2.098669927581203,
+          "mean_baseline_train": 0.8638081857480805,
+          "mean_hawkes_train": 0.34549203306537346,
+          "mean_baseline_test": 0.9748753228437044,
+          "mean_hawkes_test": 0.3950510963064471,
+          "converged": true,
+          "n_iter": 162,
+          "fit_time_s": 9.997370958328247
+        }
+      ]
+    },
+    {
+      "target_idx": 0,
+      "source_idx": 2,
+      "target": "searches",
+      "source": "to_ord",
+      "pin_grid": [
+        0.0,
+        0.01,
+        0.02,
+        0.03,
+        0.04,
+        0.05,
+        0.06,
+        0.07,
+        0.08,
+        0.09,
+        0.1
+      ],
+      "anchor_pin_val": 0.0,
+      "rows": [
+        {
+          "pin_value": 0.0,
+          "alpha_full": [
+            0.13071708818100575,
+            0.027882395399414495,
+            0.0
+          ],
+          "lam_u_mean": 0.7202143290925926,
+          "train_loss": 755785.7802293482,
+          "train_nll_mean": 1.8576512752184835,
+          "test_nll_mean": 2.096737233878534,
+          "mean_baseline_train": 0.8688702228959462,
+          "mean_hawkes_train": 0.3352232396360951,
+          "mean_baseline_test": 0.9804691887920249,
+          "mean_hawkes_test": 0.38038206609366065,
+          "converged": true,
+          "n_iter": 5,
+          "fit_time_s": 0.4624607563018799
+        },
+        {
+          "pin_value": 0.01,
+          "alpha_full": [
+            0.13046908371259552,
+            0.026264131585732358,
+            0.01
+          ],
+          "lam_u_mean": 0.7200858089653862,
+          "train_loss": 755985.3058849084,
+          "train_nll_mean": 1.8577516850369287,
+          "test_nll_mean": 2.0967776711805666,
+          "mean_baseline_train": 0.8687089933758536,
+          "mean_hawkes_train": 0.33546307575440226,
+          "mean_baseline_test": 0.9802942718792793,
+          "mean_hawkes_test": 0.38084346355580323,
+          "converged": true,
+          "n_iter": 6,
+          "fit_time_s": 0.40744709968566895
+        },
+        {
+          "pin_value": 0.02,
+          "alpha_full": [
+            0.13026907790855463,
+            0.024553011656663987,
+            0.02
+          ],
+          "lam_u_mean": 0.7199339691496378,
+          "train_loss": 756203.472938681,
+          "train_nll_mean": 1.8578614760018979,
+          "test_nll_mean": 2.0968361481802775,
+          "mean_baseline_train": 0.8685026087058545,
+          "mean_hawkes_train": 0.33574889375666106,
+          "mean_baseline_test": 0.9800915489473745,
+          "mean_hawkes_test": 0.3813529443228454,
+          "converged": true,
+          "n_iter": 126,
+          "fit_time_s": 7.355417728424072
+        },
+        {
+          "pin_value": 0.03,
+          "alpha_full": [
+            0.1299596488145652,
+            0.02293845182215139,
+            0.03
+          ],
+          "lam_u_mean": 0.7199937817123219,
+          "train_loss": 756444.6152120702,
+          "train_nll_mean": 1.857982829077133,
+          "test_nll_mean": 2.0969278030881195,
+          "mean_baseline_train": 0.868569979296067,
+          "mean_hawkes_train": 0.33584377701707496,
+          "mean_baseline_test": 0.980176430461498,
+          "mean_hawkes_test": 0.38165052914957903,
+          "converged": true,
+          "n_iter": 84,
+          "fit_time_s": 5.318989038467407
+        },
+        {
+          "pin_value": 0.04,
+          "alpha_full": [
+            0.1297195870263815,
+            0.02135681351754196,
+            0.04
+          ],
+          "lam_u_mean": 0.7198757265367168,
+          "train_loss": 756706.0672721671,
+          "train_nll_mean": 1.8581144029031291,
+          "test_nll_mean": 2.097020722823632,
+          "mean_baseline_train": 0.8684122006434688,
+          "mean_hawkes_train": 0.3361301092955617,
+          "mean_baseline_test": 0.9800213967889337,
+          "mean_hawkes_test": 0.38216607319345186,
+          "converged": true,
+          "n_iter": 103,
+          "fit_time_s": 6.02263879776001
+        },
+        {
+          "pin_value": 0.05,
+          "alpha_full": [
+            0.1294666599213623,
+            0.0199427574113266,
+            0.05
+          ],
+          "lam_u_mean": 0.7197384541388946,
+          "train_loss": 756988.8532568794,
+          "train_nll_mean": 1.8582567128697551,
+          "test_nll_mean": 2.097127042191124,
+          "mean_baseline_train": 0.8682417507215491,
+          "mean_hawkes_train": 0.3365108457866025,
+          "mean_baseline_test": 0.979835854860899,
+          "mean_hawkes_test": 0.3827955009788353,
+          "converged": true,
+          "n_iter": 13,
+          "fit_time_s": 1.030639886856079
+        },
+        {
+          "pin_value": 0.06,
+          "alpha_full": [
+            0.1292417923369804,
+            0.01854183138997946,
+            0.06
+          ],
+          "lam_u_mean": 0.7193833974718358,
+          "train_loss": 757292.6556401053,
+          "train_nll_mean": 1.858409599184336,
+          "test_nll_mean": 2.097230493122065,
+          "mean_baseline_train": 0.8678016901714892,
+          "mean_hawkes_train": 0.33696888485215326,
+          "mean_baseline_test": 0.9793545721124709,
+          "mean_hawkes_test": 0.383512928634497,
+          "converged": true,
+          "n_iter": 13,
+          "fit_time_s": 1.0204417705535889
+        },
+        {
+          "pin_value": 0.07,
+          "alpha_full": [
+            0.12893286546979207,
+            0.017220142373009128,
+            0.07
+          ],
+          "lam_u_mean": 0.7193811582437866,
+          "train_loss": 757617.7935281222,
+          "train_nll_mean": 1.8585732224347584,
+          "test_nll_mean": 2.097357783224479,
+          "mean_baseline_train": 0.8677988770550054,
+          "mean_hawkes_train": 0.33728403143035396,
+          "mean_baseline_test": 0.9793515626444733,
+          "mean_hawkes_test": 0.3840720719766503,
+          "converged": true,
+          "n_iter": 7,
+          "fit_time_s": 0.6594967842102051
+        },
+        {
+          "pin_value": 0.08,
+          "alpha_full": [
+            0.12856092662697255,
+            0.015540603254051474,
+            0.08
+          ],
+          "lam_u_mean": 0.7199289147612519,
+          "train_loss": 757950.6306095456,
+          "train_nll_mean": 1.8587407202476276,
+          "test_nll_mean": 2.09754108678756,
+          "mean_baseline_train": 0.8684433770646174,
+          "mean_hawkes_train": 0.3371799798694922,
+          "mean_baseline_test": 0.9801131975045081,
+          "mean_hawkes_test": 0.3841418725622094,
+          "converged": true,
+          "n_iter": 258,
+          "fit_time_s": 14.552077054977417
+        },
+        {
+          "pin_value": 0.09,
+          "alpha_full": [
+            0.12832994144174614,
+            0.014291912385339329,
+            0.09
+          ],
+          "lam_u_mean": 0.7195313586802363,
+          "train_loss": 758310.5978335328,
+          "train_nll_mean": 1.8589218711051716,
+          "test_nll_mean": 2.097670864991509,
+          "mean_baseline_train": 0.8679513353428661,
+          "mean_hawkes_train": 0.3377371721141077,
+          "mean_baseline_test": 0.9795732299132609,
+          "mean_hawkes_test": 0.38497790624137757,
+          "converged": true,
+          "n_iter": 25,
+          "fit_time_s": 1.8494648933410645
+        },
+        {
+          "pin_value": 0.1,
+          "alpha_full": [
+            0.12810023860156708,
+            0.013076574069695986,
+            0.1
+          ],
+          "lam_u_mean": 0.7191800652740479,
+          "train_loss": 758689.0885210943,
+          "train_nll_mean": 1.8591123437595007,
+          "test_nll_mean": 2.097797338877243,
+          "mean_baseline_train": 0.8675143039956144,
+          "mean_hawkes_train": 0.33832239469337105,
+          "mean_baseline_test": 0.9790973225422108,
+          "mean_hawkes_test": 0.3858470595585691,
+          "converged": true,
+          "n_iter": 19,
+          "fit_time_s": 1.323256254196167
+        }
+      ]
+    },
+    {
+      "target_idx": 1,
+      "source_idx": 0,
+      "target": "to_cart",
+      "source": "searches",
+      "pin_grid": [
+        0.0,
+        0.01,
+        0.02,
+        0.03,
+        0.04,
+        0.05,
+        0.06,
+        0.07,
+        0.08,
+        0.09,
+        0.1
+      ],
+      "anchor_pin_val": 0.016102908358572865,
+      "rows": [
+        {
+          "pin_value": 0.0,
+          "alpha_full": [
+            0.0,
+            0.09102166629507899,
+            0.0
+          ],
+          "lam_u_mean": 0.8161035580189818,
+          "train_loss": 1008617.3433779106,
+          "train_nll_mean": 0.8328523832109185,
+          "test_nll_mean": 0.99262971544693,
+          "mean_baseline_train": 0.3067307752386494,
+          "mean_hawkes_train": 0.06808051258932842,
+          "mean_baseline_test": 0.36347896349863384,
+          "mean_hawkes_test": 0.08086544858871011,
+          "converged": true,
+          "n_iter": 365,
+          "fit_time_s": 23.02415704727173
+        },
+        {
+          "pin_value": 0.01,
+          "alpha_full": [
+            0.01,
+            0.07550256152029515,
+            0.0
+          ],
+          "lam_u_mean": 0.777453047214455,
+          "train_loss": 1003959.276668672,
+          "train_nll_mean": 0.8305082454043426,
+          "test_nll_mean": 0.9881550776254916,
+          "mean_baseline_train": 0.2922198651326917,
+          "mean_hawkes_train": 0.0805223732870379,
+          "mean_baseline_test": 0.3463795127565798,
+          "mean_hawkes_test": 0.09428258310618397,
+          "converged": true,
+          "n_iter": 171,
+          "fit_time_s": 10.436021089553833
+        },
+        {
+          "pin_value": 0.02,
+          "alpha_full": [
+            0.02,
+            0.059649710355835495,
+            0.0
+          ],
+          "lam_u_mean": 0.7540002401029577,
+          "train_loss": 1003618.5313641012,
+          "train_nll_mean": 0.8303367678363478,
+          "test_nll_mean": 0.9870559298567633,
+          "mean_baseline_train": 0.28333292089993006,
+          "mean_hawkes_train": 0.09271460522921234,
+          "mean_baseline_test": 0.33600022836839966,
+          "mean_hawkes_test": 0.1074032107301397,
+          "converged": true,
+          "n_iter": 677,
+          "fit_time_s": 41.01128697395325
+        },
+        {
+          "pin_value": 0.03,
+          "alpha_full": [
+            0.03,
+            0.04597093535518795,
+            0.0
+          ],
+          "lam_u_mean": 0.7298357800601685,
+          "train_loss": 1006314.0127768363,
+          "train_nll_mean": 0.831693249029282,
+          "test_nll_mean": 0.9874919222409689,
+          "mean_baseline_train": 0.27416064773057747,
+          "mean_hawkes_train": 0.10653295791455944,
+          "mean_baseline_test": 0.3252991745561147,
+          "mean_hawkes_test": 0.12245533061751704,
+          "converged": true,
+          "n_iter": 324,
+          "fit_time_s": 19.831704139709473
+        },
+        {
+          "pin_value": 0.04,
+          "alpha_full": [
+            0.04,
+            0.0332012554625337,
+            0.0
+          ],
+          "lam_u_mean": 0.7085421214737888,
+          "train_loss": 1011388.0911918641,
+          "train_nll_mean": 0.8342467416666045,
+          "test_nll_mean": 0.989269827511206,
+          "mean_baseline_train": 0.2660782449370586,
+          "mean_hawkes_train": 0.12103127684820605,
+          "mean_baseline_test": 0.31585836650055,
+          "mean_hawkes_test": 0.1383151085791748,
+          "converged": true,
+          "n_iter": 306,
+          "fit_time_s": 19.183271884918213
+        },
+        {
+          "pin_value": 0.05,
+          "alpha_full": [
+            0.05,
+            0.021581249128483276,
+            0.0
+          ],
+          "lam_u_mean": 0.6883281971477444,
+          "train_loss": 1018463.5849015521,
+          "train_nll_mean": 0.8378074318285067,
+          "test_nll_mean": 0.9920641239468045,
+          "mean_baseline_train": 0.2583965309978473,
+          "mean_hawkes_train": 0.13638950494816485,
+          "mean_baseline_test": 0.3068851395768064,
+          "mean_hawkes_test": 0.15519627926886378,
+          "converged": true,
+          "n_iter": 211,
+          "fit_time_s": 12.165621995925903
+        },
+        {
+          "pin_value": 0.06,
+          "alpha_full": [
+            0.06,
+            0.010657961813993162,
+            0.0
+          ],
+          "lam_u_mean": 0.6700638869508594,
+          "train_loss": 1027238.726563508,
+          "train_nll_mean": 0.8422234573197375,
+          "test_nll_mean": 0.9959941587688798,
+          "mean_baseline_train": 0.25147389331942915,
+          "mean_hawkes_train": 0.15226885060082396,
+          "mean_baseline_test": 0.2987682103259023,
+          "mean_hawkes_test": 0.17269642891543519,
+          "converged": true,
+          "n_iter": 206,
+          "fit_time_s": 11.897418022155762
+        },
+        {
+          "pin_value": 0.07,
+          "alpha_full": [
+            0.07,
+            0.0007900244442718727,
+            0.0
+          ],
+          "lam_u_mean": 0.6535057020995967,
+          "train_loss": 1037586.4863236025,
+          "train_nll_mean": 0.8474308913006408,
+          "test_nll_mean": 1.0006642136322141,
+          "mean_baseline_train": 0.24516906651213544,
+          "mean_hawkes_train": 0.16893755518444425,
+          "mean_baseline_test": 0.29141165276725756,
+          "mean_hawkes_test": 0.19113417232594784,
+          "converged": true,
+          "n_iter": 94,
+          "fit_time_s": 5.963907957077026
+        },
+        {
+          "pin_value": 0.08,
+          "alpha_full": [
+            0.08,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.6240956844190342,
+          "train_loss": 1049458.6425682954,
+          "train_nll_mean": 0.8534054665989216,
+          "test_nll_mean": 1.0050423973714142,
+          "mean_baseline_train": 0.23383366320297763,
+          "mean_hawkes_train": 0.1923961702406142,
+          "mean_baseline_test": 0.2783382488184687,
+          "mean_hawkes_test": 0.2176369131249493,
+          "converged": true,
+          "n_iter": 312,
+          "fit_time_s": 16.78073287010193
+        },
+        {
+          "pin_value": 0.09,
+          "alpha_full": [
+            0.09,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.5965417438873435,
+          "train_loss": 1063040.9432992677,
+          "train_nll_mean": 0.8602406595300596,
+          "test_nll_mean": 1.0103106301546714,
+          "mean_baseline_train": 0.22340120397320268,
+          "mean_hawkes_train": 0.21644569152069099,
+          "mean_baseline_test": 0.26608949897692347,
+          "mean_hawkes_test": 0.24484152726556796,
+          "converged": true,
+          "n_iter": 177,
+          "fit_time_s": 8.933242082595825
+        },
+        {
+          "pin_value": 0.1,
+          "alpha_full": [
+            0.1,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.5710884897441747,
+          "train_loss": 1078127.732609975,
+          "train_nll_mean": 0.8678329752718957,
+          "test_nll_mean": 1.0165877430975034,
+          "mean_baseline_train": 0.21376856981677012,
+          "mean_hawkes_train": 0.24049521280076777,
+          "mean_baseline_test": 0.2547732485919139,
+          "mean_hawkes_test": 0.2720461414061866,
+          "converged": true,
+          "n_iter": 152,
+          "fit_time_s": 7.865147113800049
+        }
+      ]
+    },
+    {
+      "target_idx": 1,
+      "source_idx": 1,
+      "target": "to_cart",
+      "source": "to_cart",
+      "pin_grid": [
+        0.0,
+        0.014329,
+        0.028658,
+        0.042987,
+        0.057315,
+        0.071644,
+        0.085973,
+        0.100302,
+        0.114631,
+        0.12896,
+        0.143289
+      ],
+      "anchor_pin_val": 0.07164429210292993,
+      "rows": [
+        {
+          "pin_value": 0.0,
+          "alpha_full": [
+            0.026672250341772077,
+            0.0,
+            0.023339656725122965
+          ],
+          "lam_u_mean": 0.8130247472684793,
+          "train_loss": 1011716.7809584447,
+          "train_nll_mean": 0.8344121523737865,
+          "test_nll_mean": 1.000312220280479,
+          "mean_baseline_train": 0.3058082009758977,
+          "mean_hawkes_train": 0.06892234426608397,
+          "mean_baseline_test": 0.3622448511460291,
+          "mean_hawkes_test": 0.07856794584816464,
+          "converged": true,
+          "n_iter": 680,
+          "fit_time_s": 40.548404932022095
+        },
+        {
+          "pin_value": 0.014329,
+          "alpha_full": [
+            0.024671111233012098,
+            0.014329,
+            0.007965315847492056
+          ],
+          "lam_u_mean": 0.7985602734736438,
+          "train_loss": 1008501.5517680183,
+          "train_nll_mean": 0.8327941119350061,
+          "test_nll_mean": 0.9962328259574479,
+          "mean_baseline_train": 0.3004494215826358,
+          "mean_hawkes_train": 0.07168058978624234,
+          "mean_baseline_test": 0.35580849544380516,
+          "mean_hawkes_test": 0.08189707151300413,
+          "converged": true,
+          "n_iter": 366,
+          "fit_time_s": 21.918840885162354
+        },
+        {
+          "pin_value": 0.028658,
+          "alpha_full": [
+            0.02232324597831952,
+            0.028658,
+            0.0
+          ],
+          "lam_u_mean": 0.7855229047500114,
+          "train_loss": 1006160.8948016702,
+          "train_nll_mean": 0.8316161935346191,
+          "test_nll_mean": 0.9928770655729408,
+          "mean_baseline_train": 0.2955861565887911,
+          "mean_hawkes_train": 0.07512135893382532,
+          "mean_baseline_test": 0.3500152505635462,
+          "mean_hawkes_test": 0.08618986332662859,
+          "converged": true,
+          "n_iter": 235,
+          "fit_time_s": 13.451008081436157
+        },
+        {
+          "pin_value": 0.042987,
+          "alpha_full": [
+            0.019785154583848368,
+            0.042987,
+            0.0
+          ],
+          "lam_u_mean": 0.770639336493039,
+          "train_loss": 1004576.1226658697,
+          "train_nll_mean": 0.8308186686148986,
+          "test_nll_mean": 0.989615273748128,
+          "mean_baseline_train": 0.289928411631173,
+          "mean_hawkes_train": 0.07973488114072746,
+          "mean_baseline_test": 0.3433916037651539,
+          "mean_hawkes_test": 0.09201525062560661,
+          "converged": true,
+          "n_iter": 143,
+          "fit_time_s": 8.391079187393188
+        },
+        {
+          "pin_value": 0.057315,
+          "alpha_full": [
+            0.017522180392564392,
+            0.057315,
+            0.0
+          ],
+          "lam_u_mean": 0.7616217078517118,
+          "train_loss": 1003676.3566512708,
+          "train_nll_mean": 0.8303658679867517,
+          "test_nll_mean": 0.9879293286633214,
+          "mean_baseline_train": 0.2864874808932178,
+          "mean_hawkes_train": 0.08500929909146764,
+          "mean_baseline_test": 0.33938773546759526,
+          "mean_hawkes_test": 0.09858819524042173,
+          "converged": true,
+          "n_iter": 72,
+          "fit_time_s": 4.964630126953125
+        },
+        {
+          "pin_value": 0.071644,
+          "alpha_full": [
+            0.014932897520045747,
+            0.071644,
+            0.0
+          ],
+          "lam_u_mean": 0.7628323342674792,
+          "train_loss": 1003646.5505020104,
+          "train_nll_mean": 0.8303508682613912,
+          "test_nll_mean": 0.9862867841789507,
+          "mean_baseline_train": 0.2868675660832944,
+          "mean_hawkes_train": 0.08949970824430357,
+          "mean_baseline_test": 0.33990413682834025,
+          "mean_hawkes_test": 0.10427431809864275,
+          "converged": true,
+          "n_iter": 199,
+          "fit_time_s": 13.291993141174316
+        },
+        {
+          "pin_value": 0.085973,
+          "alpha_full": [
+            0.013024024776796683,
+            0.085973,
+            0.0
+          ],
+          "lam_u_mean": 0.7495856006891001,
+          "train_loss": 1004057.8019879141,
+          "train_nll_mean": 0.8305578275464967,
+          "test_nll_mean": 0.9853534504658241,
+          "mean_baseline_train": 0.2818701153970733,
+          "mean_hawkes_train": 0.09562647118544437,
+          "mean_baseline_test": 0.33402374652216243,
+          "mean_hawkes_test": 0.11181147045927854,
+          "converged": true,
+          "n_iter": 628,
+          "fit_time_s": 38.586894035339355
+        },
+        {
+          "pin_value": 0.100302,
+          "alpha_full": [
+            0.01120404011257667,
+            0.100302,
+            0.0
+          ],
+          "lam_u_mean": 0.739828630928292,
+          "train_loss": 1005251.5335159485,
+          "train_nll_mean": 0.8311585641568626,
+          "test_nll_mean": 0.9846843465906072,
+          "mean_baseline_train": 0.27811222765747123,
+          "mean_hawkes_train": 0.1019670057014006,
+          "mean_baseline_test": 0.32968142424114993,
+          "mean_hawkes_test": 0.11959043940908297,
+          "converged": true,
+          "n_iter": 113,
+          "fit_time_s": 7.348251104354858
+        },
+        {
+          "pin_value": 0.114631,
+          "alpha_full": [
+            0.009665727895368351,
+            0.114631,
+            0.0
+          ],
+          "lam_u_mean": 0.7301554027302676,
+          "train_loss": 1007050.4458644645,
+          "train_nll_mean": 0.8320638535634118,
+          "test_nll_mean": 0.9843116509401654,
+          "mean_baseline_train": 0.2743982780909842,
+          "mean_hawkes_train": 0.10898494896819876,
+          "mean_baseline_test": 0.32537738756988127,
+          "mean_hawkes_test": 0.12813568738238706,
+          "converged": true,
+          "n_iter": 151,
+          "fit_time_s": 9.525223970413208
+        },
+        {
+          "pin_value": 0.12896,
+          "alpha_full": [
+            0.00795268684295055,
+            0.12896,
+            0.0
+          ],
+          "lam_u_mean": 0.724275890466903,
+          "train_loss": 1009411.8294694626,
+          "train_nll_mean": 0.8332522024922338,
+          "test_nll_mean": 0.9844895170667706,
+          "mean_baseline_train": 0.2721457168195475,
+          "mean_hawkes_train": 0.1155826777509355,
+          "mean_baseline_test": 0.32275779748223504,
+          "mean_hawkes_test": 0.1362055923015798,
+          "converged": true,
+          "n_iter": 114,
+          "fit_time_s": 7.1620118618011475
+        },
+        {
+          "pin_value": 0.143289,
+          "alpha_full": [
+            0.006616277948929298,
+            0.143289,
+            0.0
+          ],
+          "lam_u_mean": 0.7126897402016455,
+          "train_loss": 1012245.2325858322,
+          "train_nll_mean": 0.8346780917679668,
+          "test_nll_mean": 0.984807092194739,
+          "mean_baseline_train": 0.26770607439488553,
+          "mean_hawkes_train": 0.12308618884448422,
+          "mean_baseline_test": 0.3176014611527775,
+          "mean_hawkes_test": 0.14530011047498517,
+          "converged": true,
+          "n_iter": 202,
+          "fit_time_s": 13.169515132904053
+        }
+      ]
+    },
+    {
+      "target_idx": 1,
+      "source_idx": 2,
+      "target": "to_cart",
+      "source": "to_ord",
+      "pin_grid": [
+        0.0,
+        0.01,
+        0.02,
+        0.03,
+        0.04,
+        0.05,
+        0.06,
+        0.07,
+        0.08,
+        0.09,
+        0.1
+      ],
+      "anchor_pin_val": 0.0,
+      "rows": [
+        {
+          "pin_value": 0.0,
+          "alpha_full": [
+            0.01585601200724482,
+            0.06570346630917556,
+            0.0
+          ],
+          "lam_u_mean": 0.7646271248968728,
+          "train_loss": 1003379.3201459966,
+          "train_nll_mean": 0.83021638655048,
+          "test_nll_mean": 0.9872841464189352,
+          "mean_baseline_train": 0.2875441348231252,
+          "mean_hawkes_train": 0.08727647626995656,
+          "mean_baseline_test": 0.34072507149898906,
+          "mean_hawkes_test": 0.10150792781735178,
+          "converged": true,
+          "n_iter": 91,
+          "fit_time_s": 5.482609033584595
+        },
+        {
+          "pin_value": 0.01,
+          "alpha_full": [
+            0.015737704417743786,
+            0.06377633027214663,
+            0.01
+          ],
+          "lam_u_mean": 0.7636616738339218,
+          "train_loss": 1003753.1271726077,
+          "train_nll_mean": 0.8304045021868889,
+          "test_nll_mean": 0.9874369501203781,
+          "mean_baseline_train": 0.28716361625596476,
+          "mean_hawkes_train": 0.0875972032846393,
+          "mean_baseline_test": 0.3402978415250054,
+          "mean_hawkes_test": 0.10204775244190786,
+          "converged": true,
+          "n_iter": 76,
+          "fit_time_s": 4.737099885940552
+        },
+        {
+          "pin_value": 0.02,
+          "alpha_full": [
+            0.015607799687293382,
+            0.06186021278281655,
+            0.02
+          ],
+          "lam_u_mean": 0.7634763085861355,
+          "train_loss": 1004187.8650601285,
+          "train_nll_mean": 0.8306232808308415,
+          "test_nll_mean": 0.9875943302381225,
+          "mean_baseline_train": 0.2870905891057026,
+          "mean_hawkes_train": 0.08789828115704615,
+          "mean_baseline_test": 0.34021556682545995,
+          "mean_hawkes_test": 0.10256581658770134,
+          "converged": true,
+          "n_iter": 13,
+          "fit_time_s": 0.8789699077606201
+        },
+        {
+          "pin_value": 0.03,
+          "alpha_full": [
+            0.015560773390713252,
+            0.05974533521372734,
+            0.03
+          ],
+          "lam_u_mean": 0.7628723696855246,
+          "train_loss": 1004668.7672315321,
+          "train_nll_mean": 0.8308652913110727,
+          "test_nll_mean": 0.9878151118565446,
+          "mean_baseline_train": 0.2868567869421702,
+          "mean_hawkes_train": 0.08825001322168557,
+          "mean_baseline_test": 0.33994821515106005,
+          "mean_hawkes_test": 0.10313276592890588,
+          "converged": true,
+          "n_iter": 36,
+          "fit_time_s": 2.49867582321167
+        },
+        {
+          "pin_value": 0.04,
+          "alpha_full": [
+            0.015416131922967511,
+            0.05816061011131906,
+            0.04
+          ],
+          "lam_u_mean": 0.7623454834874829,
+          "train_loss": 1005192.4360552088,
+          "train_nll_mean": 0.8311288237944677,
+          "test_nll_mean": 0.9879639268071821,
+          "mean_baseline_train": 0.28664124815823744,
+          "mean_hawkes_train": 0.0887635180033782,
+          "mean_baseline_test": 0.33971712679114596,
+          "mean_hawkes_test": 0.10390515490043155,
+          "converged": true,
+          "n_iter": 31,
+          "fit_time_s": 2.2532870769500732
+        },
+        {
+          "pin_value": 0.05,
+          "alpha_full": [
+            0.015271526041388808,
+            0.056640736214246645,
+            0.05
+          ],
+          "lam_u_mean": 0.7614905529137351,
+          "train_loss": 1005762.8315539982,
+          "train_nll_mean": 0.8314158711333909,
+          "test_nll_mean": 0.9880695209356938,
+          "mean_baseline_train": 0.28629489006491443,
+          "mean_hawkes_train": 0.08932561443792846,
+          "mean_baseline_test": 0.33933783613400337,
+          "mean_hawkes_test": 0.10473525577621733,
+          "converged": true,
+          "n_iter": 6,
+          "fit_time_s": 0.43470001220703125
+        },
+        {
+          "pin_value": 0.06,
+          "alpha_full": [
+            0.015138604056962187,
+            0.05498106228405362,
+            0.06
+          ],
+          "lam_u_mean": 0.7614661087596927,
+          "train_loss": 1006374.0277094676,
+          "train_nll_mean": 0.8317234511026576,
+          "test_nll_mean": 0.9883119610124167,
+          "mean_baseline_train": 0.28627997497378876,
+          "mean_hawkes_train": 0.08981124533432443,
+          "mean_baseline_test": 0.3393291282682474,
+          "mean_hawkes_test": 0.1054729411289424,
+          "converged": true,
+          "n_iter": 7,
+          "fit_time_s": 0.5158939361572266
+        },
+        {
+          "pin_value": 0.07,
+          "alpha_full": [
+            0.015058391217397252,
+            0.05318685159866745,
+            0.07
+          ],
+          "lam_u_mean": 0.7610307513018846,
+          "train_loss": 1007015.7361260161,
+          "train_nll_mean": 0.8320463861428634,
+          "test_nll_mean": 0.988743964872607,
+          "mean_baseline_train": 0.2861060426196381,
+          "mean_hawkes_train": 0.09032301116764524,
+          "mean_baseline_test": 0.339140945517352,
+          "mean_hawkes_test": 0.10623449456221244,
+          "converged": true,
+          "n_iter": 19,
+          "fit_time_s": 1.2544021606445312
+        },
+        {
+          "pin_value": 0.08,
+          "alpha_full": [
+            0.014931271423687793,
+            0.05172217468202326,
+            0.08
+          ],
+          "lam_u_mean": 0.7608258238631346,
+          "train_loss": 1007703.3529922469,
+          "train_nll_mean": 0.832392424272668,
+          "test_nll_mean": 0.9890163628852583,
+          "mean_baseline_train": 0.2860143576479482,
+          "mean_hawkes_train": 0.09096844590780899,
+          "mean_baseline_test": 0.33905190344122765,
+          "mean_hawkes_test": 0.10716120375444324,
+          "converged": true,
+          "n_iter": 13,
+          "fit_time_s": 0.9067671298980713
+        },
+        {
+          "pin_value": 0.09,
+          "alpha_full": [
+            0.014778937490149316,
+            0.04991484379924807,
+            0.09
+          ],
+          "lam_u_mean": 0.7620454850037002,
+          "train_loss": 1008418.5364833744,
+          "train_nll_mean": 0.8327523351036715,
+          "test_nll_mean": 0.9895424586031754,
+          "mean_baseline_train": 0.2864737486838143,
+          "mean_hawkes_train": 0.0912969505874947,
+          "mean_baseline_test": 0.3396032585287005,
+          "mean_hawkes_test": 0.10771489829156297,
+          "converged": true,
+          "n_iter": 84,
+          "fit_time_s": 5.533267021179199
+        },
+        {
+          "pin_value": 0.1,
+          "alpha_full": [
+            0.014666264484699012,
+            0.048411295379122914,
+            0.1
+          ],
+          "lam_u_mean": 0.7618778872584304,
+          "train_loss": 1009180.8200946678,
+          "train_nll_mean": 0.8331359487236786,
+          "test_nll_mean": 0.9898580497101088,
+          "mean_baseline_train": 0.286404663814635,
+          "mean_hawkes_train": 0.09194805485468689,
+          "mean_baseline_test": 0.3395294398121877,
+          "mean_hawkes_test": 0.10864637520130589,
+          "converged": true,
+          "n_iter": 13,
+          "fit_time_s": 1.0282280445098877
+        }
+      ]
+    },
+    {
+      "target_idx": 2,
+      "source_idx": 0,
+      "target": "to_ord",
+      "source": "searches",
+      "pin_grid": [
+        0.0,
+        0.01,
+        0.02,
+        0.03,
+        0.04,
+        0.05,
+        0.06,
+        0.07,
+        0.08,
+        0.09,
+        0.1
+      ],
+      "anchor_pin_val": 0.00534843770241596,
+      "rows": [
+        {
+          "pin_value": 0.0,
+          "alpha_full": [
+            0.0,
+            0.012801369463674545,
+            0.01880227930518947
+          ],
+          "lam_u_mean": 0.848907095450045,
+          "train_loss": 527319.2822489806,
+          "train_nll_mean": 0.31411598841717786,
+          "test_nll_mean": 0.40513615848191575,
+          "mean_baseline_train": 0.0875960615004079,
+          "mean_hawkes_train": 0.01342311218656682,
+          "mean_baseline_test": 0.10904471114573895,
+          "mean_hawkes_test": 0.016212285923740823,
+          "converged": true,
+          "n_iter": 1472,
+          "fit_time_s": 64.17245697975159
+        },
+        {
+          "pin_value": 0.01,
+          "alpha_full": [
+            0.01,
+            0.0017291739827828847,
+            0.01103615281831726
+          ],
+          "lam_u_mean": 0.7266778785790583,
+          "train_loss": 526812.9355943943,
+          "train_nll_mean": 0.31386117318795526,
+          "test_nll_mean": 0.4007962620017345,
+          "mean_baseline_train": 0.07493295561356918,
+          "mean_hawkes_train": 0.027601610256582292,
+          "mean_baseline_test": 0.09338692961060845,
+          "mean_hawkes_test": 0.03158131124324238,
+          "converged": true,
+          "n_iter": 486,
+          "fit_time_s": 26.71436595916748
+        },
+        {
+          "pin_value": 0.02,
+          "alpha_full": [
+            0.02,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.6521256239565282,
+          "train_loss": 535040.1923853271,
+          "train_nll_mean": 0.3180014796480976,
+          "test_nll_mean": 0.40303105523689137,
+          "mean_baseline_train": 0.06714861354158576,
+          "mean_hawkes_train": 0.04809904256015355,
+          "mean_baseline_test": 0.08366056911668719,
+          "mean_hawkes_test": 0.05440922828123732,
+          "converged": true,
+          "n_iter": 493,
+          "fit_time_s": 24.814674854278564
+        },
+        {
+          "pin_value": 0.03,
+          "alpha_full": [
+            0.03,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.5604599694926515,
+          "train_loss": 550462.9590355436,
+          "train_nll_mean": 0.3257628735145845,
+          "test_nll_mean": 0.4080983670804518,
+          "mean_baseline_train": 0.05764214229831332,
+          "mean_hawkes_train": 0.07214856384023033,
+          "mean_baseline_test": 0.07188121275700039,
+          "mean_hawkes_test": 0.08161384242185599,
+          "converged": true,
+          "n_iter": 365,
+          "fit_time_s": 17.780019998550415
+        },
+        {
+          "pin_value": 0.04,
+          "alpha_full": [
+            0.04,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.49160256330215124,
+          "train_loss": 570486.7347964196,
+          "train_nll_mean": 0.33583969137087955,
+          "test_nll_mean": 0.41657159040210945,
+          "mean_baseline_train": 0.05050327185276282,
+          "mean_hawkes_train": 0.0961980851203071,
+          "mean_baseline_test": 0.0630304990246565,
+          "mean_hawkes_test": 0.10881845656247464,
+          "converged": true,
+          "n_iter": 332,
+          "fit_time_s": 15.587597846984863
+        },
+        {
+          "pin_value": 0.05,
+          "alpha_full": [
+            0.05,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.437818202023246,
+          "train_loss": 593910.4073367674,
+          "train_nll_mean": 0.347627482271723,
+          "test_nll_mean": 0.42737055561844894,
+          "mean_baseline_train": 0.044920515279009005,
+          "mean_hawkes_train": 0.12024760640038389,
+          "mean_baseline_test": 0.056117963025595366,
+          "mean_hawkes_test": 0.1360230707030933,
+          "converged": true,
+          "n_iter": 332,
+          "fit_time_s": 14.030074119567871
+        },
+        {
+          "pin_value": 0.06,
+          "alpha_full": [
+            0.06,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.3947901706864225,
+          "train_loss": 619970.7227797846,
+          "train_nll_mean": 0.36074214431812773,
+          "test_nll_mean": 0.44000992808136347,
+          "mean_baseline_train": 0.040452209819336934,
+          "mean_hawkes_train": 0.14429712768046066,
+          "mean_baseline_test": 0.05059070499867048,
+          "mean_hawkes_test": 0.16322768484371197,
+          "converged": true,
+          "n_iter": 240,
+          "fit_time_s": 12.100836992263794
+        },
+        {
+          "pin_value": 0.07,
+          "alpha_full": [
+            0.07,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.3599610740089604,
+          "train_loss": 648148.203386356,
+          "train_nll_mean": 0.37492225415917413,
+          "test_nll_mean": 0.45416690211956456,
+          "mean_baseline_train": 0.036837887266440376,
+          "mean_hawkes_train": 0.16834664896053744,
+          "mean_baseline_test": 0.046117948886464456,
+          "mean_hawkes_test": 0.19043229898433067,
+          "converged": true,
+          "n_iter": 273,
+          "fit_time_s": 11.771017074584961
+        },
+        {
+          "pin_value": 0.08,
+          "alpha_full": [
+            0.08,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.3311108634086018,
+          "train_loss": 678069.7753863669,
+          "train_nll_mean": 0.3899800651643917,
+          "test_nll_mean": 0.4694483710660675,
+          "mean_baseline_train": 0.033841125354959894,
+          "mean_hawkes_train": 0.1923961702406142,
+          "mean_baseline_test": 0.04241355868222594,
+          "mean_hawkes_test": 0.2176369131249493,
+          "converged": true,
+          "n_iter": 216,
+          "fit_time_s": 9.126115798950195
+        },
+        {
+          "pin_value": 0.09,
+          "alpha_full": [
+            0.09,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.307003323957552,
+          "train_loss": 709454.4950150077,
+          "train_nll_mean": 0.40577419445076884,
+          "test_nll_mean": 0.4858035849278337,
+          "mean_baseline_train": 0.03133666004620066,
+          "mean_hawkes_train": 0.21644569152069099,
+          "mean_baseline_test": 0.039319083283652675,
+          "mean_hawkes_test": 0.24484152726556796,
+          "converged": true,
+          "n_iter": 221,
+          "fit_time_s": 11.510056018829346
+        },
+        {
+          "pin_value": 0.1,
+          "alpha_full": [
+            0.1,
+            0.0,
+            0.0
+          ],
+          "lam_u_mean": 0.28630175371716315,
+          "train_loss": 742082.2109977535,
+          "train_nll_mean": 0.422193852508839,
+          "test_nll_mean": 0.5029520588376746,
+          "mean_baseline_train": 0.029187126775743522,
+          "mean_hawkes_train": 0.24049521280076777,
+          "mean_baseline_test": 0.03666456174216605,
+          "mean_hawkes_test": 0.2720461414061866,
+          "converged": true,
+          "n_iter": 203,
+          "fit_time_s": 10.316826105117798
+        }
+      ]
+    },
+    {
+      "target_idx": 2,
+      "source_idx": 1,
+      "target": "to_ord",
+      "source": "to_cart",
+      "pin_grid": [
+        0.0,
+        0.01,
+        0.02,
+        0.03,
+        0.04,
+        0.05,
+        0.06,
+        0.07,
+        0.08,
+        0.09,
+        0.1
+      ],
+      "anchor_pin_val": 0.00539009875020842,
+      "rows": [
+        {
+          "pin_value": 0.0,
+          "alpha_full": [
+            0.006720581935171266,
+            0.0,
+            0.025881624899251315
+          ],
+          "lam_u_mean": 0.7512873365799764,
+          "train_loss": 526952.4598674648,
+          "train_nll_mean": 0.31393138775203416,
+          "test_nll_mean": 0.40098418053539675,
+          "mean_baseline_train": 0.07751830298524517,
+          "mean_hawkes_train": 0.021459794040702702,
+          "mean_baseline_test": 0.0966207745092764,
+          "mean_hawkes_test": 0.024944448900281226,
+          "converged": true,
+          "n_iter": 23,
+          "fit_time_s": 1.2727937698364258
+        },
+        {
+          "pin_value": 0.01,
+          "alpha_full": [
+            0.005221667221861885,
+            0.01,
+            0.013796469588868538
+          ],
+          "lam_u_mean": 0.7413364941218632,
+          "train_loss": 526598.0521447852,
+          "train_nll_mean": 0.3137530346726271,
+          "test_nll_mean": 0.4009358749954221,
+          "mean_baseline_train": 0.07648274826330853,
+          "mean_hawkes_train": 0.02286113682431891,
+          "mean_baseline_test": 0.09534291548788068,
+          "mean_hawkes_test": 0.026640451972211723,
+          "converged": true,
+          "n_iter": 1045,
+          "fit_time_s": 59.77742886543274
+        },
+        {
+          "pin_value": 0.02,
+          "alpha_full": [
+            0.004181587267517415,
+            0.02,
+            0.0014632474610268374
+          ],
+          "lam_u_mean": 0.7317235493264569,
+          "train_loss": 527645.6463515606,
+          "train_nll_mean": 0.31428022875105927,
+          "test_nll_mean": 0.4013584228976705,
+          "mean_baseline_train": 0.07546920392013115,
+          "mean_hawkes_train": 0.025315184130375062,
+          "mean_baseline_test": 0.09407566515433731,
+          "mean_hawkes_test": 0.029520850319619322,
+          "converged": true,
+          "n_iter": 121,
+          "fit_time_s": 8.069370031356812
+        },
+        {
+          "pin_value": 0.03,
+          "alpha_full": [
+            0.002228510004355579,
+            0.03,
+            0.0
+          ],
+          "lam_u_mean": 0.7483209538496379,
+          "train_loss": 529470.2354090897,
+          "train_nll_mean": 0.31519843977254075,
+          "test_nll_mean": 0.40190866502503464,
+          "mean_baseline_train": 0.07720033761907706,
+          "mean_hawkes_train": 0.02779824243106166,
+          "mean_baseline_test": 0.09617996150120517,
+          "mean_hawkes_test": 0.032715168826152885,
+          "converged": true,
+          "n_iter": 178,
+          "fit_time_s": 10.949171304702759
+        },
+        {
+          "pin_value": 0.04,
+          "alpha_full": [
+            0.001171471471819906,
+            0.04,
+            0.0
+          ],
+          "lam_u_mean": 0.7459140930357534,
+          "train_loss": 532723.4741906445,
+          "train_nll_mean": 0.31683560825845714,
+          "test_nll_mean": 0.40294299604574885,
+          "mean_baseline_train": 0.07694741442788619,
+          "mean_hawkes_train": 0.03273570954745399,
+          "mean_baseline_test": 0.09586732052919748,
+          "mean_hawkes_test": 0.038723734068030584,
+          "converged": true,
+          "n_iter": 22,
+          "fit_time_s": 1.5012409687042236
+        },
+        {
+          "pin_value": 0.05,
+          "alpha_full": [
+            0.0003317931614750169,
+            0.05,
+            0.0
+          ],
+          "lam_u_mean": 0.7306538711686058,
+          "train_loss": 536808.6994220805,
+          "train_nll_mean": 0.31889146780516436,
+          "test_nll_mean": 0.40463113987817023,
+          "mean_baseline_train": 0.07534354837851485,
+          "mean_hawkes_train": 0.038195917592748256,
+          "mean_baseline_test": 0.09388516390745012,
+          "mean_hawkes_test": 0.04532361940733022,
+          "converged": true,
+          "n_iter": 110,
+          "fit_time_s": 6.157310962677002
+        },
+        {
+          "pin_value": 0.06,
+          "alpha_full": [
+            0.0,
+            0.06,
+            0.0
+          ],
+          "lam_u_mean": 0.713348448656247,
+          "train_loss": 541122.9875397717,
+          "train_nll_mean": 0.32106260156438754,
+          "test_nll_mean": 0.4072240154395428,
+          "mean_baseline_train": 0.07348545303501677,
+          "mean_hawkes_train": 0.044877565107600624,
+          "mean_baseline_test": 0.0915351170189934,
+          "mean_hawkes_test": 0.05330518669690539,
+          "converged": true,
+          "n_iter": 916,
+          "fit_time_s": 47.676727056503296
+        },
+        {
+          "pin_value": 0.07,
+          "alpha_full": [
+            0.0,
+            0.07,
+            0.0
+          ],
+          "lam_u_mean": 0.6856346821115806,
+          "train_loss": 546672.7320158905,
+          "train_nll_mean": 0.3238554696479433,
+          "test_nll_mean": 0.40924563457518054,
+          "mean_baseline_train": 0.07061938104320059,
+          "mean_hawkes_train": 0.052357159292200736,
+          "mean_baseline_test": 0.08798639905718393,
+          "mean_hawkes_test": 0.06218938447972298,
+          "converged": true,
+          "n_iter": 616,
+          "fit_time_s": 33.16793203353882
+        },
+        {
+          "pin_value": 0.08,
+          "alpha_full": [
+            0.0,
+            0.08,
+            0.0
+          ],
+          "lam_u_mean": 0.6715875250155333,
+          "train_loss": 552824.8174923795,
+          "train_nll_mean": 0.32695146140910075,
+          "test_nll_mean": 0.4118342563923483,
+          "mean_baseline_train": 0.0691514393777858,
+          "mean_hawkes_train": 0.05983675347680084,
+          "mean_baseline_test": 0.08617933610446511,
+          "mean_hawkes_test": 0.07107358226254054,
+          "converged": true,
+          "n_iter": 3,
+          "fit_time_s": 0.3005411624908447
+        },
+        {
+          "pin_value": 0.09,
+          "alpha_full": [
+            0.0,
+            0.09,
+            0.0
+          ],
+          "lam_u_mean": 0.6454858170507186,
+          "train_loss": 559413.0509100461,
+          "train_nll_mean": 0.3302669414133414,
+          "test_nll_mean": 0.4149755768558563,
+          "mean_baseline_train": 0.06643249674030496,
+          "mean_hawkes_train": 0.06731634766140093,
+          "mean_baseline_test": 0.08281201499760829,
+          "mean_hawkes_test": 0.0799577800453581,
+          "converged": true,
+          "n_iter": 423,
+          "fit_time_s": 20.52839493751526
+        },
+        {
+          "pin_value": 0.1,
+          "alpha_full": [
+            0.0,
+            0.1,
+            0.0
+          ],
+          "lam_u_mean": 0.6343563759889795,
+          "train_loss": 566510.3193044125,
+          "train_nll_mean": 0.33383858952513285,
+          "test_nll_mean": 0.41833752110788436,
+          "mean_baseline_train": 0.06527606083444944,
+          "mean_hawkes_train": 0.07479594184600105,
+          "mean_baseline_test": 0.08138675322098245,
+          "mean_hawkes_test": 0.08884197782817567,
+          "converged": true,
+          "n_iter": 3,
+          "fit_time_s": 0.3067770004272461
+        }
+      ]
+    },
+    {
+      "target_idx": 2,
+      "source_idx": 2,
+      "target": "to_ord",
+      "source": "to_ord",
+      "pin_grid": [
+        0.0,
+        0.01,
+        0.02,
+        0.03,
+        0.04,
+        0.05,
+        0.06,
+        0.07,
+        0.08,
+        0.09,
+        0.1
+      ],
+      "anchor_pin_val": 0.02018050256840689,
+      "rows": [
+        {
+          "pin_value": 0.0,
+          "alpha_full": [
+            0.005392051782534484,
+            0.007913758574395422,
+            0.0
+          ],
+          "lam_u_mean": 0.7979273805039445,
+          "train_loss": 525870.1772916303,
+          "train_nll_mean": 0.31338673700704156,
+          "test_nll_mean": 0.4026239305140286,
+          "mean_baseline_train": 0.08234563148759544,
+          "mean_hawkes_train": 0.01888679666987162,
+          "mean_baseline_test": 0.10254050426434683,
+          "mean_hawkes_test": 0.021699608455048303,
+          "converged": true,
+          "n_iter": 189,
+          "fit_time_s": 8.836933135986328
+        },
+        {
+          "pin_value": 0.01,
+          "alpha_full": [
+            0.005299329306690033,
+            0.0064828278434540965,
+            0.01
+          ],
+          "lam_u_mean": 0.7922783295145187,
+          "train_loss": 525767.8318260575,
+          "train_nll_mean": 0.3133352324043477,
+          "test_nll_mean": 0.4019541481464608,
+          "mean_baseline_train": 0.08175718456383246,
+          "mean_hawkes_train": 0.019640196090266133,
+          "mean_baseline_test": 0.10182100143180929,
+          "mean_hawkes_test": 0.022749875002098068,
+          "converged": true,
+          "n_iter": 467,
+          "fit_time_s": 25.17900800704956
+        },
+        {
+          "pin_value": 0.02,
+          "alpha_full": [
+            0.005126541133217563,
+            0.005315899797886914,
+            0.02
+          ],
+          "lam_u_mean": 0.7905989638078569,
+          "train_loss": 525771.9556539633,
+          "train_nll_mean": 0.31333730769040624,
+          "test_nll_mean": 0.40143623915374677,
+          "mean_baseline_train": 0.08158127979402877,
+          "mean_hawkes_train": 0.020398504635794054,
+          "mean_baseline_test": 0.10160424626559962,
+          "mean_hawkes_test": 0.023816871115366758,
+          "converged": true,
+          "n_iter": 22,
+          "fit_time_s": 1.486677885055542
+        },
+        {
+          "pin_value": 0.03,
+          "alpha_full": [
+            0.004973710482218856,
+            0.004249716667732606,
+            0.03
+          ],
+          "lam_u_mean": 0.786926029553513,
+          "train_loss": 525953.0004681889,
+          "train_nll_mean": 0.3134284171613954,
+          "test_nll_mean": 0.4009838372831559,
+          "mean_baseline_train": 0.08119332033840966,
+          "mean_hawkes_train": 0.021280163175810028,
+          "mean_baseline_test": 0.10112854135858587,
+          "mean_hawkes_test": 0.025027664673859702,
+          "converged": true,
+          "n_iter": 7,
+          "fit_time_s": 0.4809000492095947
+        },
+        {
+          "pin_value": 0.04,
+          "alpha_full": [
+            0.004798452858609098,
+            0.0033144336258024956,
+            0.04
+          ],
+          "lam_u_mean": 0.7853745337084856,
+          "train_loss": 526291.3810811907,
+          "train_nll_mean": 0.3135987047157528,
+          "test_nll_mean": 0.4006987126458036,
+          "mean_baseline_train": 0.08102811226078652,
+          "mean_hawkes_train": 0.022205793874184816,
+          "mean_baseline_test": 0.10092768471512815,
+          "mean_hawkes_test": 0.02629374074608727,
+          "converged": true,
+          "n_iter": 6,
+          "fit_time_s": 0.49305200576782227
+        },
+        {
+          "pin_value": 0.05,
+          "alpha_full": [
+            0.004639403408403648,
+            0.0024688951851673255,
+            0.05
+          ],
+          "lam_u_mean": 0.7803463587396376,
+          "train_loss": 526674.232509908,
+          "train_nll_mean": 0.31379137188099065,
+          "test_nll_mean": 0.40078349734898705,
+          "mean_baseline_train": 0.0804957043195417,
+          "mean_hawkes_train": 0.023237529773473906,
+          "mean_baseline_test": 0.10027557027930055,
+          "mean_hawkes_test": 0.027683641407438123,
+          "converged": true,
+          "n_iter": 238,
+          "fit_time_s": 12.88159728050232
+        },
+        {
+          "pin_value": 0.06,
+          "alpha_full": [
+            0.004473336824004659,
+            0.0018893602006423752,
+            0.06
+          ],
+          "lam_u_mean": 0.7803393606595971,
+          "train_loss": 527309.8027680068,
+          "train_nll_mean": 0.3141112179381091,
+          "test_nll_mean": 0.40076965562009814,
+          "mean_baseline_train": 0.08049487072026545,
+          "mean_hawkes_train": 0.024451349591292276,
+          "mean_baseline_test": 0.10027480453253672,
+          "mean_hawkes_test": 0.029290774957477773,
+          "converged": true,
+          "n_iter": 6,
+          "fit_time_s": 0.5535469055175781
+        },
+        {
+          "pin_value": 0.07,
+          "alpha_full": [
+            0.004355734774216201,
+            0.0012446882219167774,
+            0.07
+          ],
+          "lam_u_mean": 0.771453599050298,
+          "train_loss": 527973.9014993797,
+          "train_nll_mean": 0.3144454207395466,
+          "test_nll_mean": 0.4007895578923596,
+          "mean_baseline_train": 0.0795571632919603,
+          "mean_hawkes_train": 0.0257330044664526,
+          "mean_baseline_test": 0.09913015406956832,
+          "mean_hawkes_test": 0.030971885409930157,
+          "converged": true,
+          "n_iter": 261,
+          "fit_time_s": 12.204199314117432
+        },
+        {
+          "pin_value": 0.08,
+          "alpha_full": [
+            0.004223685825339186,
+            0.0008730038628067014,
+            0.08
+          ],
+          "lam_u_mean": 0.7704300977234774,
+          "train_loss": 528799.0670305634,
+          "train_nll_mean": 0.31486067922317773,
+          "test_nll_mean": 0.40103445241591795,
+          "mean_baseline_train": 0.07945067476036692,
+          "mean_hawkes_train": 0.027184098902121194,
+          "mean_baseline_test": 0.09899716255638329,
+          "mean_hawkes_test": 0.032856221231351776,
+          "converged": true,
+          "n_iter": 85,
+          "fit_time_s": 4.15102481842041
+        },
+        {
+          "pin_value": 0.09,
+          "alpha_full": [
+            0.004036785069604972,
+            0.0004276518250855862,
+            0.09
+          ],
+          "lam_u_mean": 0.7700806162747814,
+          "train_loss": 529748.390282408,
+          "train_nll_mean": 0.31533841916642436,
+          "test_nll_mean": 0.4012654344596911,
+          "mean_baseline_train": 0.07941263926453919,
+          "mean_hawkes_train": 0.028448176934110284,
+          "mean_baseline_test": 0.09895223584243285,
+          "mean_hawkes_test": 0.03452588700602865,
+          "converged": true,
+          "n_iter": 49,
+          "fit_time_s": 2.5676991939544678
+        },
+        {
+          "pin_value": 0.1,
+          "alpha_full": [
+            0.003899393884217836,
+            0.00014940251783955298,
+            0.1
+          ],
+          "lam_u_mean": 0.7695907358424429,
+          "train_loss": 530829.6551402274,
+          "train_nll_mean": 0.3158825577523123,
+          "test_nll_mean": 0.40159130687368394,
+          "mean_baseline_train": 0.0793609527292299,
+          "mean_hawkes_train": 0.029956309173771553,
+          "mean_baseline_test": 0.09888924581137634,
+          "mean_hawkes_test": 0.03647869902722047,
+          "converged": true,
+          "n_iter": 6,
+          "fit_time_s": 0.5115058422088623
+        }
+      ]
+    }
+  ]
+}
