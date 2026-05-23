@@ -314,13 +314,13 @@ def main() -> None:
     fig.savefig(output_dir / "test_nll_per_obs_ladder.png", dpi=150)
     plt.close(fig)
 
-    # Third chart: MAE and RMSE side-by-side (1x2 panel)
-    mae_values = [r["test_mae"] for r in rows]
+    # Third chart: LL and RMSE side-by-side (1x2 panel)
+    ll_values = [r["test_poisson_loglik"] for r in rows]
     rmse_values = [r["test_rmse"] for r in rows]
-    fig, (ax_mae, ax_rmse) = plt.subplots(1, 2, figsize=(11.6, 4.6))
+    fig, (ax_ll, ax_rmse) = plt.subplots(1, 2, figsize=(11.6, 4.6))
 
     for ax, vals, ylabel, title in [
-        (ax_mae, mae_values, "Test MAE (lower is better)", "MAE на тесте"),
+        (ax_ll, ll_values, "Test LL (higher is better)", "LL на тесте"),
         (ax_rmse, rmse_values, "Test RMSE (lower is better)", "RMSE на тесте"),
     ]:
         v_min = min(vals)
@@ -337,10 +337,11 @@ def main() -> None:
             width=0.62,
         )
         for rect, val in zip(bars, vals):
+            label = f"{val:,.0f}" if abs(val) >= 100 else f"{val:.4f}"
             ax.text(
                 rect.get_x() + rect.get_width() / 2.0,
                 val,
-                f"{val:.4f}",
+                label,
                 ha="center",
                 va="bottom",
                 fontsize=8,
@@ -367,7 +368,7 @@ def main() -> None:
         ax.spines["right"].set_visible(False)
 
     fig.tight_layout()
-    fig.savefig(output_dir / "test_mae_rmse_ladder.png", dpi=150)
+    fig.savefig(output_dir / "test_ll_rmse_ladder.png", dpi=150)
     plt.close(fig)
 
     summary_out = {

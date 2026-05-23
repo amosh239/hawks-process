@@ -1,0 +1,62 @@
+{
+  "channels": [
+    "searches",
+    "to_cart",
+    "to_ord"
+  ],
+  "analysis_window": [
+    "2025-01-15",
+    "2025-09-30"
+  ],
+  "split_date": "2025-08-09",
+  "n_features": 141,
+  "feature_names_count": 141,
+  "source_features": [
+    "search",
+    "cat",
+    "searches",
+    "has_search_to_cart",
+    "has_search_to_ord",
+    "has_cat_to_cart",
+    "has_cat_to_ord",
+    "search_to_cart",
+    "search_to_ord",
+    "cat_to_cart",
+    "cat_to_ord",
+    "to_cart",
+    "to_ord",
+    "gmv"
+  ],
+  "gbdt_params": {
+    "loss": "poisson",
+    "max_iter": 400,
+    "learning_rate": 0.05,
+    "max_depth": 6,
+    "min_samples_leaf": 200,
+    "l2_regularization": 1.0,
+    "random_state": 42,
+    "early_stopping": true,
+    "validation_fraction": 0.15,
+    "n_iter_no_change": 20
+  },
+  "per_channel_metrics": [
+    {
+      "target": "searches",
+      "test_nll": 2.051571517211021,
+      "n_iter": 352,
+      "fit_seconds": 45.07255411148071
+    },
+    {
+      "target": "to_cart",
+      "test_nll": 0.9569313099183572,
+      "n_iter": 231,
+      "fit_seconds": 30.615711212158203
+    },
+    {
+      "target": "to_ord",
+      "test_nll": 0.3877392442023828,
+      "n_iter": 124,
+      "fit_seconds": 19.199553966522217
+    }
+  ]
+}
